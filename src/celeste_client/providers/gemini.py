@@ -14,7 +14,7 @@ GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
 
 class GeminiClient(BaseClient):
-    def __init__(self, model: str = GeminiModel.FLASH_LITE.value, **kwargs):
+    def __init__(self, model: str = GeminiModel.FLASH_LITE, **kwargs):
         super().__init__(**kwargs)
 
         self.client = genai.Client(api_key=GOOGLE_API_KEY)
