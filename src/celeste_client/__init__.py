@@ -7,7 +7,14 @@ from .core import Provider, MessageRole, LogLevel, AIPrompt, AIResponse
 
 __version__ = "0.1.0"
 
-SUPPORTED_PROVIDERS = ["gemini", "openai", "mistral", "anthropic"]
+SUPPORTED_PROVIDERS = [
+    "gemini",
+    "openai",
+    "mistral",
+    "anthropic",
+    "huggingface",
+    "ollama",
+]
 
 
 def create_client(provider: str, **kwargs) -> BaseClient:
@@ -30,6 +37,14 @@ def create_client(provider: str, **kwargs) -> BaseClient:
         from .providers.anthropic import AnthropicClient
 
         return AnthropicClient(**kwargs)
+    elif provider == "huggingface":
+        from .providers.huggingface import HuggingFaceClient
+
+        return HuggingFaceClient(**kwargs)
+    elif provider == "ollama":
+        from .providers.ollama import OllamaClient
+
+        return OllamaClient(**kwargs)
 
     raise ValueError(f"Provider {provider} not implemented")
 

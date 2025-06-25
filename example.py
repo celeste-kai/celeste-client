@@ -7,6 +7,8 @@ from celeste_client.core.enums import (
     OpenAIModel,
     MistralModel,
     AnthropicModel,
+    HuggingFaceModel,
+    OllamaModel,
 )
 
 st.set_page_config(page_title="Celeste AI", page_icon="🌟", layout="wide")
@@ -44,6 +46,16 @@ with st.sidebar:
             .title()
         )
 
+    def format_huggingface(x):
+        # Extract model name from path
+        if "/" in x:
+            return x.split("/")[-1].replace("-", " ")
+        return x
+
+    def format_ollama(x):
+        # Format Ollama model names for display
+        return x.replace(":", " ").replace("-", " ").title()
+
     def format_default(x):
         return x
 
@@ -59,6 +71,12 @@ with st.sidebar:
     elif selected_provider == Provider.ANTHROPIC.value:
         model_options = [model.value for model in AnthropicModel]
         format_func = format_anthropic
+    elif selected_provider == Provider.HUGGINGFACE.value:
+        model_options = [model.value for model in HuggingFaceModel]
+        format_func = format_huggingface
+    elif selected_provider == Provider.OLLAMA.value:
+        model_options = [model.value for model in OllamaModel]
+        format_func = format_ollama
     else:
         model_options = ["Not implemented"]
         format_func = format_default
