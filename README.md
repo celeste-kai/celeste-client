@@ -198,12 +198,28 @@ uv run streamlit run example.py
 
 ## 🗺️ Roadmap
 
-- [ ] 💬 **Conversation Support** - Multi-turn conversations ([celeste-conversations](https://github.com/yourusername/celeste-conversations))
-- [ ] 🔧 **Function Calling** - Tool use across providers  
-- [ ] 📊 **Token Counting** - Usage tracking and limits
-- [ ] 🎨 **Prompt Templates** - Reusable prompt management
+### Celeste-Client Next Steps
+- [ ] 📝 **Use Types** - Implement AIPrompt and AIResponse types
+- [ ] 📊 **Add Metadata** - Generation time and token usage tracking
+- [ ] 📚 **Sphinx Documentation** - Comprehensive API documentation
+- [ ] 🧪 **Unit Tests** - Achieve 80% test coverage
+- [ ] 🛡️ **Error Handling** - Robust error handling and retry logic
 - [ ] 📦 **PyPI Package** - Easy installation
-- [ ] 🧪 **Testing Suite** - Comprehensive tests
+
+### Celeste Ecosystem
+
+| Package | Description | Status |
+|---------|-------------|--------|
+| 💬 **celeste-conversations** | Multi-turn conversations with memory management | 🔄 In Progress |
+| 🌐 **celeste-web-agent** | Web browsing and automation capabilities | 📋 Backlog |
+| 🎨 **celeste-image-generation** | Image generation across providers | 📋 Backlog |
+| 🎬 **celeste-video-generation** | Video generation and editing | 📋 Backlog |
+| 📊 **celeste-presentation-intelligence** | PowerPoint and presentation analysis | 📋 Backlog |
+| 📄 **celeste-document-intelligence** | PDF and document processing | 📋 Backlog |
+| 📈 **celeste-table-intelligence** | Excel, CSV, and Parquet analysis | 📋 Backlog |
+| 🖼️ **celeste-image-intelligence** | Image analysis and understanding | 📋 Backlog |
+| 🎥 **celeste-video-intelligence** | Video analysis and understanding | 📋 Backlog |
+| 🚀 **And many more...** | Expanding ecosystem of AI tools | 🔮 Future |
 
 ## 🤝 Contributing
 
