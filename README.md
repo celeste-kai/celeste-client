@@ -1,122 +1,222 @@
+<div align="center">
+
 # 🌟 Celeste AI Client
 
-A Python client library for multiple AI providers with unified API interface and streaming support.
+### One Interface, All AI Providers - Unified API for Seamless AI Integration
 
-## Features
+[![Python](https://img.shields.io/badge/Python-3.13+-blue?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge&logo=opensourceinitiative&logoColor=white)](LICENSE)
+[![Providers](https://img.shields.io/badge/Providers-6+-orange?style=for-the-badge&logo=openai&logoColor=white)](#-supported-providers)
+[![Models](https://img.shields.io/badge/Models-40+-purple?style=for-the-badge&logo=huggingface&logoColor=white)](#-supported-models)
 
-- **Multi-Provider Support**: Unified interface for Gemini, OpenAI, Mistral, and Anthropic Claude
-- **Streaming Support**: Real-time streaming responses for all providers
-- **Async/Await**: Full async support for both standard and streaming responses
-- **Interactive Demo**: Streamlit web interface with provider and model selection
-- **Type Safety**: Full type hints and enum-based model selection
+[![Demo](https://img.shields.io/badge/🚀_Try_Demo-Streamlit-FF4B4B?style=for-the-badge)](example.py)
+[![Documentation](https://img.shields.io/badge/📚_Docs-Coming_Soon-blue?style=for-the-badge)](#)
 
-## Installation
+</div>
 
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd celeste-client
-```
+---
 
-2. Install dependencies using UV:
-```bash
-uv sync
-```
+## 🎯 Why Celeste?
 
-3. Set up your environment:
-```bash
-cp .env.example .env
-# Edit .env and add your API keys for the providers you want to use
-```
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">🔌<br><b>Unified API</b><br>One interface for all providers</td>
+      <td align="center">🏠<br><b>Local & Cloud</b><br>Run locally or in the cloud</td>
+      <td align="center">⚡<br><b>Async First</b><br>Built for performance</td>
+      <td align="center">🔄<br><b>Streaming</b><br>Real-time responses</td>
+    </tr>
+  </table>
+</div>
 
-## API Key Setup
-
-Add API keys for the providers you want to use in your `.env` file:
-
-```bash
-# Gemini
-GOOGLE_API_KEY=your_google_api_key_here
-
-# OpenAI
-OPENAI_API_KEY=your_openai_api_key_here
-
-# Mistral
-MISTRAL_API_KEY=your_mistral_api_key_here
-
-# Anthropic Claude
-ANTHROPIC_API_KEY=your_anthropic_api_key_here
-```
-
-### Getting API Keys
-
-- **Gemini**: [Google AI Studio](https://aistudio.google.com/app/apikey)
-- **OpenAI**: [OpenAI API Platform](https://platform.openai.com/api-keys)
-- **Mistral**: [Mistral AI Platform](https://console.mistral.ai/)
-- **Anthropic**: [Anthropic Console](https://console.anthropic.com/)
-
-## Usage
-
-### Basic Usage
+## 🚀 Quick Start
 
 ```python
-import asyncio
+# Install
+pip install celeste-client  # Coming soon to PyPI
+
+# Use any AI provider with the same interface
 from celeste_client import create_client
 
-async def main():
-    # Use any supported provider
-    client = create_client("openai", model="gpt-4o-mini")
-    # client = create_client("gemini", model="gemini-2.5-flash")
-    # client = create_client("mistral", model="mistral-large-latest")
-    # client = create_client("anthropic", model="claude-3-7-sonnet-20250219")
-    
-    # Standard generation
-    response = await client.generate_content("Why is the sky blue?")
-    print(response)
-    
-    # Streaming generation
-    async for chunk in client.stream_generate_content("Tell me a story"):
-        print(chunk, end="")
+# Cloud providers
+client = create_client("openai", model="gpt-4o-mini")
+client = create_client("anthropic", model="claude-3-7-sonnet")
 
-asyncio.run(main())
+# Local models (no API key needed!)
+client = create_client("ollama", model="llama3.2")
+
+# Generate content
+response = await client.generate_content("Explain quantum computing")
 ```
 
-### Supported Providers & Models
+## 📦 Installation
 
-#### Google Gemini
-- `gemini-2.5-flash-lite-preview-06-17` (Flash Lite)
-- `gemini-2.5-flash` (Flash)
-- `gemini-2.5-pro` (Pro)
+<details open>
+<summary><b>Using UV (Recommended)</b></summary>
 
-#### OpenAI
-- `o3-2025-04-16` (O3)
-- `o4-mini-2025-04-16` (O4 Mini)
-- `gpt-4.1-2025-04-14` (GPT-4.1)
+```bash
+git clone https://github.com/yourusername/celeste-client
+cd celeste-client
+uv sync
+```
+</details>
 
-#### Mistral AI
-- `mistral-small-latest` (Small)
-- `mistral-medium-latest` (Medium)
-- `mistral-large-latest` (Large)
-- `codestral-latest` (Codestral)
+<details>
+<summary><b>Using pip</b></summary>
 
-#### Anthropic Claude
-- `claude-3-7-sonnet-20250219` (Claude 3.7 Sonnet)
-- `claude-sonnet-4-20250514` (Claude 4 Sonnet)
-- `claude-opus-4-20250514` (Claude 4 Opus)
+```bash
+git clone https://github.com/yourusername/celeste-client
+cd celeste-client
+pip install -e .
+```
+</details>
 
-### Streamlit Demo
+## 🔧 Configuration
 
-Run the interactive demo:
+### 1️⃣ Create your environment file
+```bash
+cp .env.example .env
+```
+
+### 2️⃣ Add your API keys
+
+<details>
+<summary><b>🔑 API Key Setup</b></summary>
+
+| Provider | Environment Variable | Get API Key |
+|----------|---------------------|-------------|
+| 🌈 **Gemini** | `GOOGLE_API_KEY` | [Google AI Studio](https://aistudio.google.com/app/apikey) |
+| 🤖 **OpenAI** | `OPENAI_API_KEY` | [OpenAI Platform](https://platform.openai.com/api-keys) |
+| 🌊 **Mistral** | `MISTRAL_API_KEY` | [Mistral Console](https://console.mistral.ai/) |
+| 🎭 **Anthropic** | `ANTHROPIC_API_KEY` | [Anthropic Console](https://console.anthropic.com/) |
+| 🤗 **Hugging Face** | `HUGGINGFACE_TOKEN` | [HF Settings](https://huggingface.co/settings/tokens) |
+| 🦙 **Ollama** | *No key needed!* | [Install Ollama](https://ollama.com/download) |
+
+</details>
+
+## 🎨 Supported Providers
+
+<div align="center">
+
+| Provider | Models | Streaming | Local | Free Tier |
+|----------|--------|-----------|--------|-----------|
+| 🌈 **Google Gemini** | 3 | ✅ | ❌ | ✅ |
+| 🤖 **OpenAI** | 3 | ✅ | ❌ | ❌ |
+| 🌊 **Mistral AI** | 4 | ✅ | ❌ | ✅ |
+| 🎭 **Anthropic** | 3 | ✅ | ❌ | ❌ |
+| 🤗 **Hugging Face** | 7 | ✅ | ❌ | ✅ |
+| 🦙 **Ollama** | 20+ | ✅ | ✅ | ✅ |
+
+</div>
+
+## 📊 Supported Models
+
+<details>
+<summary><b>View All Models</b></summary>
+
+### 🌈 Google Gemini
+- `gemini-2.5-flash-lite-preview-06-17` - Ultra-fast responses
+- `gemini-2.5-flash` - Balanced performance
+- `gemini-2.5-pro` - Maximum capability
+
+### 🤖 OpenAI
+- `o3-2025-04-16` - Latest O3 model
+- `o4-mini-2025-04-16` - Cost-effective
+- `gpt-4.1-2025-04-14` - Advanced reasoning
+
+### 🌊 Mistral AI
+- `mistral-small-latest` - Fast & efficient
+- `mistral-medium-latest` - Balanced
+- `mistral-large-latest` - High performance
+- `codestral-latest` - Code specialist
+
+### 🎭 Anthropic Claude
+- `claude-3-7-sonnet-20250219` - Claude 3.7
+- `claude-sonnet-4-20250514` - Claude 4 Sonnet
+- `claude-opus-4-20250514` - Claude 4 Opus
+
+### 🤗 Hugging Face
+- `google/gemma-2-2b-it` - Lightweight
+- `meta-llama/Meta-Llama-3.1-8B-Instruct` - Llama 3.1
+- `microsoft/phi-4` - Microsoft Phi-4
+- `Qwen/Qwen2.5-7B-Instruct-1M` - 1M context window
+- `deepseek-ai/DeepSeek-R1` - DeepSeek reasoning
+- [View more...](#)
+
+### 🦙 Ollama (Local)
+Popular models (pull with `ollama pull <model>`):
+- `llama3.2` - Latest Llama
+- `mistral` - Mistral 7B
+- `mixtral:8x7b` - MoE model
+- `phi3` - Microsoft Phi-3
+- `deepseek-r1` - DeepSeek reasoning
+- `codellama` - Code generation
+- [View all models](https://ollama.com/library)
+
+</details>
+
+## 💻 Usage Examples
+
+### 🔥 Streaming Responses
+```python
+async for chunk in client.stream_generate_content("Write a haiku"):
+    print(chunk, end="", flush=True)
+```
+
+### 🏠 Local Models with Ollama
+```python
+# No API key needed!
+client = create_client("ollama", model="llama3.2")
+
+# Custom host
+client = create_client("ollama", model="llama3.2", 
+                      host="http://192.168.1.100:11434")
+```
+
+### 🎯 Provider Comparison
+```python
+providers = ["openai", "anthropic", "mistral"]
+prompt = "Explain quantum entanglement in one sentence"
+
+for provider in providers:
+    client = create_client(provider)
+    response = await client.generate_content(prompt)
+    print(f"{provider}: {response}")
+```
+
+## 🎮 Interactive Demo
+
+Try our Streamlit demo with all providers:
 
 ```bash
 uv run streamlit run example.py
 ```
 
-## Requirements
+<div align="center">
+  <img src="assets/demo-screenshot.png" width="600" alt="Celeste Demo">
+</div>
 
-- Python >= 3.13
-- UV package manager
-- API keys for desired providers (see API Key Setup section)
+## 🗺️ Roadmap
 
-## License
+- [ ] 💬 **Conversation Support** - Multi-turn conversations ([celeste-conversations](https://github.com/yourusername/celeste-conversations))
+- [ ] 🔧 **Function Calling** - Tool use across providers  
+- [ ] 📊 **Token Counting** - Usage tracking and limits
+- [ ] 🎨 **Prompt Templates** - Reusable prompt management
+- [ ] 📦 **PyPI Package** - Easy installation
+- [ ] 🧪 **Testing Suite** - Comprehensive tests
 
-MIT
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+<div align="center">
+  Made with ❤️ by the Celeste Team
+  
+  <a href="#-celeste-ai-client">⬆ Back to Top</a>
+</div>

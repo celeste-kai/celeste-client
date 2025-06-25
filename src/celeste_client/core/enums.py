@@ -12,6 +12,8 @@ class Provider(Enum):
     OPENAI = "openai"
     ANTHROPIC = "anthropic"
     MISTRAL = "mistral"
+    HUGGINGFACE = "huggingface"
+    OLLAMA = "ollama"
 
 
 class MessageRole(Enum):
@@ -62,3 +64,23 @@ class AnthropicModel(Enum):
     CLAUDE_3_7_SONNET = "claude-3-7-sonnet-20250219"
     CLAUDE_4_SONNET = "claude-sonnet-4-20250514"
     CLAUDE_4_OPUS = "claude-opus-4-20250514"
+
+
+class HuggingFaceModel(Enum):
+    """Hugging Face model enumeration for provider-specific model selection."""
+
+    GEMMA_2_2B = "google/gemma-2-2b-it"
+    LLAMA_3_1_8B = "meta-llama/Meta-Llama-3.1-8B-Instruct"
+    PHI_4 = "microsoft/phi-4"
+    QWEN_2_5_7B = "Qwen/Qwen2.5-7B-Instruct-1M"
+    QWEN_2_5_CODER_32B = "Qwen/Qwen2.5-Coder-32B-Instruct"
+    DEEPSEEK_R1_DISTILL = "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B"
+    DEEPSEEK_R1 = "deepseek-ai/DeepSeek-R1"
+
+
+class OllamaModel(Enum):
+    """Ollama model enumeration for local AI model selection."""
+
+    # Currently installed models (check with 'ollama list')
+    LLAMA3_2 = "llama3.2:latest"
+    GRANITE3_2 = "granite3.2:latest"
