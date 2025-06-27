@@ -2,36 +2,40 @@
 Core data types for agent communication.
 """
 
-from dataclasses import dataclass, field
 from typing import Any, Dict, Optional
+
+from pydantic import BaseModel, ConfigDict
 
 from .enums import MessageRole, Provider
 
 
-@dataclass(frozen=True)
-class AIPrompt:
+class AIPrompt(BaseModel):
     """Prompt for agent-AI communication."""
+
+    model_config = ConfigDict(frozen=True)
 
     role: MessageRole
     content: str
     mcp_context: Optional[Dict[str, Any]] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: Dict[str, Any] = {}
 
 
-@dataclass(frozen=True)
-class AIUsage:
+class AIUsage(BaseModel):
     """Token usage metrics for AI responses."""
+
+    model_config = ConfigDict(frozen=True)
 
     input_tokens: int
     output_tokens: int
     total_tokens: int
 
 
-@dataclass(frozen=True)
-class AIResponse:
+class AIResponse(BaseModel):
     """Response from AI providers."""
+
+    model_config = ConfigDict(frozen=True)
 
     content: str
     usage: Optional[AIUsage] = None
     provider: Optional[Provider] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: Dict[str, Any] = {}
