@@ -37,6 +37,10 @@ pip install celeste-client  # Coming soon to PyPI
 
 # Use any AI provider with the same interface
 from celeste_client import create_client
+from celeste_client.core.types import AIPrompt, MessageRole
+
+# Create a prompt
+prompt = AIPrompt(role=MessageRole.USER, content="Explain quantum computing")
 
 # Cloud providers
 client = create_client("openai", model="gpt-4o-mini")
@@ -46,7 +50,10 @@ client = create_client("anthropic", model="claude-3-7-sonnet")
 client = create_client("ollama", model="llama3.2")
 
 # Generate content
-response = await client.generate_content("Explain quantum computing")
+response = await client.generate_content(prompt)
+print(response.content)
+# Get usage details
+print(response.usage)
 ```
 
 ## 📦 Installation
@@ -159,8 +166,10 @@ Popular models (pull with `ollama pull <model>`):
 
 ### 🔥 Streaming Responses
 ```python
-async for chunk in client.stream_generate_content("Write a haiku"):
-    print(chunk, end="", flush=True)
+prompt = AIPrompt(role=MessageRole.USER, content="Write a haiku about programming")
+async for chunk in client.stream_generate_content(prompt):
+    if chunk.content:
+        print(chunk.content, end="", flush=True)
 ```
 
 ### 🏠 Local Models with Ollama
@@ -175,13 +184,17 @@ client = create_client("ollama", model="llama3.2",
 
 ### 🎯 Provider Comparison
 ```python
+from celeste_client import create_client
+from celeste_client.core.types import AIPrompt, MessageRole
+
 providers = ["openai", "anthropic", "mistral"]
-prompt = "Explain quantum entanglement in one sentence"
+prompt = AIPrompt(role=MessageRole.USER, content="Explain quantum entanglement in one sentence")
 
 for provider in providers:
     client = create_client(provider)
     response = await client.generate_content(prompt)
-    print(f"{provider}: {response}")
+    print(f"{provider}: {response.content}")
+    print(f"Usage: {response.usage}")
 ```
 
 ## 🎮 Interactive Demo
@@ -199,8 +212,8 @@ uv run streamlit run example.py
 ## 🗺️ Roadmap
 
 ### Celeste-Client Next Steps
-- [ ] 📝 **Use Types** - Implement AIPrompt and AIResponse types
-- [ ] 📊 **Add Metadata** - Generation time and token usage tracking
+- [x] 📝 **Use Types** - Implement AIPrompt and AIResponse types
+- [x] 📊 **Add Metadata** - Generation time and token usage tracking
 - [ ] 📚 **Sphinx Documentation** - Comprehensive API documentation
 - [ ] 🧪 **Unit Tests** - Achieve 80% test coverage
 - [ ] 🛡️ **Error Handling** - Robust error handling and retry logic

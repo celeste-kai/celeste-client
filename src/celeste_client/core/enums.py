@@ -82,5 +82,6 @@ class OllamaModel(Enum):
     """Ollama model enumeration for local AI model selection."""
 
     # Currently installed models (check with 'ollama list')
+    MAGISTRAL_SMALL = "hf.co/mistralai/Magistral-Small-2506_gguf:Q8_0"
     LLAMA3_2 = "llama3.2:latest"
     GRANITE3_2 = "granite3.2:latest"
