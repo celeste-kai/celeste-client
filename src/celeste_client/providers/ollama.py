@@ -5,7 +5,7 @@ from ollama import AsyncClient
 from celeste_client.base import BaseClient
 from celeste_client.core.config import OLLAMA_HOST
 from celeste_client.core.enums import OllamaModel, Provider
-from celeste_client.core.types import AIPrompt, AIResponse, AIUsage
+from celeste_client.core.types import AIResponse, AIUsage
 
 
 class OllamaClient(BaseClient):
@@ -26,8 +26,8 @@ class OllamaClient(BaseClient):
             total_tokens=prompt_tokens + completion_tokens,
         )
 
-    async def generate_content(self, prompt: AIPrompt, **kwargs: Any) -> AIResponse:
-        message = {"role": prompt.role.value, "content": prompt.content}
+    async def generate_content(self, prompt: str, **kwargs: Any) -> AIResponse:
+        message = {"role": "user", "content": prompt}
         # Ensure we get usage data by setting stream=False explicitly
         if "stream" not in kwargs:
             kwargs["stream"] = False
@@ -47,9 +47,9 @@ class OllamaClient(BaseClient):
         )
 
     async def stream_generate_content(
-        self, prompt: AIPrompt, **kwargs: Any
+        self, prompt: str, **kwargs: Any
     ) -> AsyncIterator[AIResponse]:
-        message = {"role": prompt.role.value, "content": prompt.content}
+        message = {"role": "user", "content": prompt}
         stream = await self.client.chat(
             model=self.model_name, messages=[message], stream=True, **kwargs
         )

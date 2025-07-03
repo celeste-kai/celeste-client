@@ -8,13 +8,12 @@ from celeste_client.core.enums import (
     AnthropicModel,
     GeminiModel,
     HuggingFaceModel,
-    MessageRole,
     MistralModel,
     OllamaModel,
     OpenAIModel,
     Provider,
 )
-from celeste_client.core.types import AIPrompt, AIResponse
+from celeste_client.core.types import AIResponse
 
 st.set_page_config(page_title="Celeste AI", page_icon="🌟", layout="wide")
 
@@ -108,16 +107,12 @@ prompt = st.text_area(
 if st.button("✨ Generate", type="primary", use_container_width=True):
     client = create_client(selected_provider, model=selected_model)
 
-    # Create the AIPrompt
-    ai_prompt = AIPrompt(role=MessageRole.USER, content=prompt)
+    # Use the prompt directly as a string
+    ai_prompt = prompt
 
-    # Show AIPrompt details in an expander
-    with st.expander("🔍 AIPrompt Details", expanded=False):
-        # Convert role enum to its value for proper JSON display
-        prompt_dict = ai_prompt.__dict__.copy()
-        if prompt_dict.get("role"):
-            prompt_dict["role"] = prompt_dict["role"].value
-        st.json(prompt_dict)
+    # Show prompt details in an expander
+    with st.expander("🔍 Prompt Details", expanded=False):
+        st.text(ai_prompt)
 
     if streaming:
         placeholder = st.empty()

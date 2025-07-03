@@ -5,7 +5,7 @@ from huggingface_hub import InferenceClient
 from celeste_client.base import BaseClient
 from celeste_client.core.config import HUGGINGFACE_TOKEN
 from celeste_client.core.enums import HuggingFaceModel, Provider
-from celeste_client.core.types import AIPrompt, AIResponse, AIUsage
+from celeste_client.core.types import AIResponse, AIUsage
 
 
 class HuggingFaceClient(BaseClient):
@@ -31,8 +31,8 @@ class HuggingFaceClient(BaseClient):
             total_tokens=getattr(usage_data, "total_tokens", 0),
         )
 
-    async def generate_content(self, prompt: AIPrompt, **kwargs: Any) -> AIResponse:
-        messages = [{"role": prompt.role.value, "content": prompt.content}]
+    async def generate_content(self, prompt: str, **kwargs: Any) -> AIResponse:
+        messages = [{"role": "user", "content": prompt}]
 
         response = self.client.chat_completion(messages=messages, **kwargs)
 
@@ -44,9 +44,9 @@ class HuggingFaceClient(BaseClient):
         )
 
     async def stream_generate_content(
-        self, prompt: AIPrompt, **kwargs: Any
+        self, prompt: str, **kwargs: Any
     ) -> AsyncIterator[AIResponse]:
-        messages = [{"role": prompt.role.value, "content": prompt.content}]
+        messages = [{"role": "user", "content": prompt}]
 
         # Try to enable usage information like OpenAI does
         if "stream_options" not in kwargs:
