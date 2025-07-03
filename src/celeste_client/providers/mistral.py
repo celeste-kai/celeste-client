@@ -5,7 +5,7 @@ from mistralai import Mistral
 from celeste_client.base import BaseClient
 from celeste_client.core.config import MISTRAL_API_KEY
 from celeste_client.core.enums import MistralModel, Provider
-from celeste_client.core.types import AIPrompt, AIResponse, AIUsage
+from celeste_client.core.types import AIResponse, AIUsage
 
 
 class MistralClient(BaseClient):
@@ -27,10 +27,10 @@ class MistralClient(BaseClient):
             total_tokens=getattr(usage_data, "total_tokens", 0),
         )
 
-    async def generate_content(self, prompt: AIPrompt, **kwargs: Any) -> AIResponse:
+    async def generate_content(self, prompt: str, **kwargs: Any) -> AIResponse:
         response = await self.client.chat.complete_async(
             model=self.model_name,
-            messages=[{"role": prompt.role.value, "content": prompt.content}],
+            messages=[{"role": "user", "content": prompt}],
             **kwargs,
         )
 
@@ -47,11 +47,11 @@ class MistralClient(BaseClient):
         )
 
     async def stream_generate_content(
-        self, prompt: AIPrompt, **kwargs: Any
+        self, prompt: str, **kwargs: Any
     ) -> AsyncIterator[AIResponse]:
         response = await self.client.chat.stream_async(
             model=self.model_name,
-            messages=[{"role": prompt.role.value, "content": prompt.content}],
+            messages=[{"role": "user", "content": prompt}],
             **kwargs,
         )
 

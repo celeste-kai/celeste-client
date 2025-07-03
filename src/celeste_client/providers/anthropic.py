@@ -6,7 +6,7 @@ from anthropic.types import MessageParam
 from celeste_client.base import BaseClient
 from celeste_client.core.config import ANTHROPIC_API_KEY
 from celeste_client.core.enums import AnthropicModel, Provider
-from celeste_client.core.types import AIPrompt, AIResponse, AIUsage
+from celeste_client.core.types import AIResponse, AIUsage
 
 MAX_TOKENS = 1024
 
@@ -32,11 +32,11 @@ class AnthropicClient(BaseClient):
             total_tokens=usage_data.input_tokens + usage_data.output_tokens,
         )
 
-    async def generate_content(self, prompt: AIPrompt, **kwargs: Any) -> AIResponse:
+    async def generate_content(self, prompt: str, **kwargs: Any) -> AIResponse:
         max_tokens = kwargs.pop("max_tokens", MAX_TOKENS)
         response = await self.client.messages.create(
             max_tokens=max_tokens,
-            messages=[MessageParam(role=prompt.role.value, content=prompt.content)],
+            messages=[MessageParam(role="user", content=prompt)],
             model=self.model_name,
             **kwargs,
         )
@@ -49,13 +49,13 @@ class AnthropicClient(BaseClient):
         )
 
     async def stream_generate_content(
-        self, prompt: AIPrompt, **kwargs: Any
+        self, prompt: str, **kwargs: Any
     ) -> AsyncIterator[AIResponse]:
         max_tokens = kwargs.pop("max_tokens", MAX_TOKENS)
         async with self.client.messages.stream(
             model=self.model_name,
             max_tokens=max_tokens,
-            messages=[MessageParam(role=prompt.role.value, content=prompt.content)],
+            messages=[MessageParam(role="user", content=prompt)],
             **kwargs,
         ) as stream:
             async for text in stream.text_stream:

@@ -6,7 +6,7 @@ from google.genai import types
 from celeste_client.base import BaseClient
 from celeste_client.core.config import GOOGLE_API_KEY
 from celeste_client.core.enums import GeminiModel, Provider
-from celeste_client.core.types import AIPrompt, AIResponse, AIUsage
+from celeste_client.core.types import AIResponse, AIUsage
 
 
 class GeminiClient(BaseClient):
@@ -36,11 +36,11 @@ class GeminiClient(BaseClient):
             total_tokens=getattr(usage_data, "total_token_count", 0),
         )
 
-    async def generate_content(self, prompt: AIPrompt, **kwargs: Any) -> AIResponse:
+    async def generate_content(self, prompt: str, **kwargs: Any) -> AIResponse:
         config = GeminiClient._get_generation_config(kwargs)
 
         response = await self.client.aio.models.generate_content(
-            model=self.model_name, contents=prompt.content, config=config
+            model=self.model_name, contents=prompt, config=config
         )
 
         # Extract usage information if available
@@ -56,13 +56,13 @@ class GeminiClient(BaseClient):
         )
 
     async def stream_generate_content(
-        self, prompt: AIPrompt, **kwargs: Any
+        self, prompt: str, **kwargs: Any
     ) -> AsyncIterator[AIResponse]:
         config = GeminiClient._get_generation_config(kwargs)
 
         last_usage_metadata = None
         async for chunk in await self.client.aio.models.generate_content_stream(
-            model=self.model_name, contents=prompt.content, config=config
+            model=self.model_name, contents=prompt, config=config
         ):
             if chunk.text:  # Only yield if there's actual content
                 yield AIResponse(

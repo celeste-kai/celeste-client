@@ -10,7 +10,7 @@ from openai.types.chat import (
 from celeste_client.base import BaseClient
 from celeste_client.core.config import OPENAI_API_KEY
 from celeste_client.core.enums import OpenAIModel, Provider
-from celeste_client.core.types import AIPrompt, AIResponse, AIUsage
+from celeste_client.core.types import AIResponse, AIUsage
 
 
 class OpenAIClient(BaseClient):
@@ -30,9 +30,9 @@ class OpenAIClient(BaseClient):
             total_tokens=usage_data.total_tokens,
         )
 
-    async def generate_content(self, prompt: AIPrompt, **kwargs: Any) -> AIResponse:
+    async def generate_content(self, prompt: str, **kwargs: Any) -> AIResponse:
         messages: List[ChatCompletionMessageParam] = [
-            ChatCompletionUserMessageParam(role="user", content=prompt.content)
+            ChatCompletionUserMessageParam(role="user", content=prompt)
         ]
         response = await self.client.chat.completions.create(
             messages=messages, model=self.model_name, **kwargs
@@ -48,10 +48,10 @@ class OpenAIClient(BaseClient):
         )
 
     async def stream_generate_content(
-        self, prompt: AIPrompt, **kwargs: Any
+        self, prompt: str, **kwargs: Any
     ) -> AsyncIterator[AIResponse]:
         messages: List[ChatCompletionMessageParam] = [
-            ChatCompletionUserMessageParam(role="user", content=prompt.content)
+            ChatCompletionUserMessageParam(role="user", content=prompt)
         ]
         response = await self.client.chat.completions.create(
             messages=messages,

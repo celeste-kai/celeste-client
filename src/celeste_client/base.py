@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any, AsyncIterator, Optional
 
-from celeste_client.core.types import AIPrompt, AIResponse, AIUsage
+from celeste_client.core.types import AIResponse, AIUsage
 
 
 class BaseClient(ABC):
@@ -14,13 +14,13 @@ class BaseClient(ABC):
         pass
 
     @abstractmethod
-    async def generate_content(self, prompt: AIPrompt, **kwargs: Any) -> AIResponse:
+    async def generate_content(self, prompt: str, **kwargs: Any) -> AIResponse:
         """Generates a single response."""
         pass
 
     @abstractmethod
     async def stream_generate_content(
-        self, prompt: AIPrompt, **kwargs: Any
+        self, prompt: str, **kwargs: Any
     ) -> AsyncIterator[AIResponse]:
         """Streams the response chunk by chunk."""
         pass

@@ -13,11 +13,13 @@ dependencies = [
     "python-dotenv>=1.1.1",
     "pydantic>=2.8.2",
     "streamlit>=1.46.0",
+    "notebook>=7.4.4",
 ]
 
 [dependency-groups]
 dev = [
     "pre-commit>=4.2.0",
+    "ruff>=0.12.1",
 ]
 
 [tool.ruff]
