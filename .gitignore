@@ -75,3 +75,6 @@ Thumbs.db
 
 # UV
 uv.lock
+
+# Notebooks
+Notebooks/

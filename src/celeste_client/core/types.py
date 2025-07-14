@@ -2,7 +2,7 @@
 Core data types for agent communication.
 """
 
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from pydantic import BaseModel, ConfigDict
 
@@ -35,7 +35,7 @@ class AIResponse(BaseModel):
 
     model_config = ConfigDict(frozen=True)
 
-    content: str
+    content: Union[str, BaseModel, List[BaseModel]]
     usage: Optional[AIUsage] = None
     provider: Optional[Provider] = None
     metadata: Dict[str, Any] = {}
