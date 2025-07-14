@@ -8,7 +8,7 @@ from enum import Enum
 class Provider(Enum):
     """AI provider enumeration for multi-provider agent support."""
 
-    GEMINI = "gemini"
+    GOOGLE = "google"
     OPENAI = "openai"
     ANTHROPIC = "anthropic"
     MISTRAL = "mistral"
@@ -33,8 +33,8 @@ class LogLevel(Enum):
     ERROR = "ERROR"
 
 
-class GeminiModel(Enum):
-    """Gemini 2.5 model enumeration for provider-specific model selection."""
+class GoogleModel(Enum):
+    """Google model enumeration for provider-specific model selection."""
 
     FLASH_LITE = "gemini-2.5-flash-lite-preview-06-17"
     FLASH = "gemini-2.5-flash"

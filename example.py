@@ -6,7 +6,7 @@ import streamlit as st
 from celeste_client import create_client
 from celeste_client.core.enums import (
     AnthropicModel,
-    GeminiModel,
+    GoogleModel,
     HuggingFaceModel,
     MistralModel,
     OllamaModel,
@@ -63,8 +63,8 @@ with st.sidebar:
     def format_default(x: str) -> str:
         return x
 
-    if selected_provider == Provider.GEMINI.value:
-        model_options = [model.value for model in GeminiModel]
+    if selected_provider == Provider.GOOGLE.value:
+        model_options = [model.value for model in GoogleModel]
         format_func = format_gemini
     elif selected_provider == Provider.OPENAI.value:
         model_options = [model.value for model in OpenAIModel]
@@ -105,6 +105,7 @@ prompt = st.text_area(
 )
 
 if st.button("✨ Generate", type="primary", use_container_width=True):
+    # Create client (accepts both string and enum)
     client = create_client(selected_provider, model=selected_model)
 
     # Use the prompt directly as a string

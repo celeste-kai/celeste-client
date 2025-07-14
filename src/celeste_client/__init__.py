@@ -2,7 +2,7 @@
 Celeste AI Client - Minimal predefinition AI communication for Alita agents.
 """
 
-from typing import Any
+from typing import Any, Union
 
 from .base import BaseClient
 from .core import AIPrompt, AIResponse, LogLevel, MessageRole, Provider
@@ -10,11 +10,14 @@ from .core import AIPrompt, AIResponse, LogLevel, MessageRole, Provider
 __version__ = "0.1.0"
 
 
-def create_client(provider: Provider, **kwargs: Any) -> BaseClient:
-    if provider == Provider.GEMINI:
-        from .providers.gemini import GeminiClient
+def create_client(provider: Union[Provider, str], **kwargs: Any) -> BaseClient:
+    if isinstance(provider, str):
+        provider = Provider(provider)
 
-        return GeminiClient(**kwargs)
+    if provider == Provider.GOOGLE:
+        from .providers.google import GoogleClient
+
+        return GoogleClient(**kwargs)
 
     if provider == Provider.OPENAI:
         from .providers.openai import OpenAIClient
