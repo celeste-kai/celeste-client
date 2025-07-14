@@ -36,24 +36,21 @@
 pip install celeste-client  # Coming soon to PyPI
 
 # Use any AI provider with the same interface
-from celeste_client import create_client
-from celeste_client.core.types import AIPrompt, MessageRole
-
-# Create a prompt
-prompt = AIPrompt(role=MessageRole.USER, content="Explain quantum computing")
+from celeste_client import create_client, Provider
 
 # Cloud providers
-client = create_client("openai", model="gpt-4o-mini")
-client = create_client("anthropic", model="claude-3-7-sonnet")
+client = create_client(Provider.OPENAI, model="gpt-4o-mini")
+client = create_client(Provider.ANTHROPIC, model="claude-3-7-sonnet")
 
 # Local models (no API key needed!)
-client = create_client("ollama", model="llama3.2")
+client = create_client(Provider.OLLAMA, model="llama3.2")
 
 # Generate content
-response = await client.generate_content(prompt)
+response = await client.generate_content("Explain quantum computing")
 print(response.content)
+
 # Get usage details
-print(response.usage)
+print(response.usage)  # Token usage and costs
 ```
 
 ## 📦 Installation
@@ -105,14 +102,14 @@ cp .env.example .env
 
 <div align="center">
 
-| Provider | Models | Streaming | Local | Free Tier |
-|----------|--------|-----------|--------|-----------|
-| 🌈 **Google Gemini** | 3 | ✅ | ❌ | ✅ |
-| 🤖 **OpenAI** | 3 | ✅ | ❌ | ❌ |
-| 🌊 **Mistral AI** | 4 | ✅ | ❌ | ✅ |
-| 🎭 **Anthropic** | 3 | ✅ | ❌ | ❌ |
-| 🤗 **Hugging Face** | 7 | ✅ | ❌ | ✅ |
-| 🦙 **Ollama** | 20+ | ✅ | ✅ | ✅ |
+| Provider | Models | Streaming | Structured Output | Local | Free Tier |
+|----------|--------|-----------|-------------------|--------|-----------|
+| 🌈 **Google Gemini** | 3 | ✅ | ✅ | ❌ | ✅ |
+| 🤖 **OpenAI** | 3 | ✅ | ✅ | ❌ | ❌ |
+| 🌊 **Mistral AI** | 4 | ✅ | 🔜 Coming Soon | ❌ | ✅ |
+| 🎭 **Anthropic** | 3 | ✅ | 🔜 Coming Soon | ❌ | ❌ |
+| 🤗 **Hugging Face** | 7 | ✅ | 🔜 Coming Soon | ❌ | ✅ |
+| 🦙 **Ollama** | 20+ | ✅ | 🔜 Coming Soon | ✅ | ✅ |
 
 </div>
 
@@ -166,8 +163,7 @@ Popular models (pull with `ollama pull <model>`):
 
 ### 🔥 Streaming Responses
 ```python
-prompt = AIPrompt(role=MessageRole.USER, content="Write a haiku about programming")
-async for chunk in client.stream_generate_content(prompt):
+async for chunk in client.stream_generate_content("Write a haiku about programming"):
     if chunk.content:
         print(chunk.content, end="", flush=True)
 ```
@@ -175,27 +171,60 @@ async for chunk in client.stream_generate_content(prompt):
 ### 🏠 Local Models with Ollama
 ```python
 # No API key needed!
-client = create_client("ollama", model="llama3.2")
+client = create_client(Provider.OLLAMA, model="llama3.2")
 
 # Custom host
-client = create_client("ollama", model="llama3.2", 
+client = create_client(Provider.OLLAMA, model="llama3.2", 
                       host="http://192.168.1.100:11434")
 ```
 
 ### 🎯 Provider Comparison
 ```python
-from celeste_client import create_client
-from celeste_client.core.types import AIPrompt, MessageRole
+from celeste_client import create_client, Provider
 
-providers = ["openai", "anthropic", "mistral"]
-prompt = AIPrompt(role=MessageRole.USER, content="Explain quantum entanglement in one sentence")
+providers = [Provider.OPENAI, Provider.ANTHROPIC, Provider.MISTRAL]
+prompt = "Explain quantum entanglement in one sentence"
 
 for provider in providers:
     client = create_client(provider)
     response = await client.generate_content(prompt)
-    print(f"{provider}: {response.content}")
+    print(f"{provider.value}: {response.content}")
     print(f"Usage: {response.usage}")
 ```
+
+### 🎯 Structured Output with Pydantic (NEW!)
+
+Generate structured data with type safety using Pydantic models:
+
+```python
+from pydantic import BaseModel
+from celeste_client import create_client, Provider, GeminiModel
+
+# Define your data structure
+class Person(BaseModel):
+    name: str
+    age: int
+    occupation: str
+
+# Single object generation
+client = create_client(Provider.GOOGLE, model=GeminiModel.FLASH)
+response = await client.generate_content(
+    "Generate a person profile for a software engineer",
+    response_schema=Person
+)
+print(response.content)  # Person(name='Alice Chen', age=28, occupation='Senior Software Engineer')
+print(response.content.name)  # Direct access to fields: 'Alice Chen'
+
+# List generation
+response = await client.generate_content(
+    "Generate a list of 5 team members",
+    response_schema=list[Person]
+)
+for person in response.content:
+    print(f"{person.name} - {person.occupation}")
+```
+
+**Currently supported:** 🌈 Gemini, 🤖 OpenAI (other providers coming soon!)
 
 ## 🎮 Interactive Demo
 
@@ -214,6 +243,8 @@ uv run streamlit run example.py
 ### Celeste-Client Next Steps
 - [x] 📝 **Use Types** - Implement AIPrompt and AIResponse types
 - [x] 📊 **Add Metadata** - Generation time and token usage tracking
+- [x] 🎯 **Structured Output** - Pydantic model support (Gemini ✅, OpenAI ✅)
+- [ ] 🔄 **Structured Output for All** - Extend to OpenAI, Anthropic, Mistral
 - [ ] 📚 **Sphinx Documentation** - Comprehensive API documentation
 - [ ] 🧪 **Unit Tests** - Achieve 80% test coverage
 - [ ] 🛡️ **Error Handling** - Robust error handling and retry logic
@@ -225,10 +256,12 @@ uv run streamlit run example.py
 |---------|-------------|--------|
 | 💬 **celeste-conversations** | Multi-turn conversations with memory management | 🔄 In Progress |
 | 🌐 **celeste-web-agent** | Web browsing and automation capabilities | 📋 Backlog |
-| 🎨 **celeste-image-generation** | Image generation across providers | 📋 Backlog |
+| 🎨 **celeste-image-generation** | Image generation across providers | ✅ Done |
+| ✏️ **celeste-image-edit** | Image editing and manipulation | ✅ Done |
 | 🎬 **celeste-video-generation** | Video generation and editing | 📋 Backlog |
 | 📊 **celeste-presentation-intelligence** | PowerPoint and presentation analysis | 📋 Backlog |
-| 📄 **celeste-document-intelligence** | PDF and document processing | 📋 Backlog |
+| 📄 **celeste-document-intelligence** | PDF and document processing | ✅ Done |
+| 🔢 **celeste-embeddings** | Text embeddings across providers | ✅ Done |
 | 📈 **celeste-table-intelligence** | Excel, CSV, and Parquet analysis | 📋 Backlog |
 | 🖼️ **celeste-image-intelligence** | Image analysis and understanding | 📋 Backlog |
 | 🎥 **celeste-video-intelligence** | Video analysis and understanding | 📋 Backlog |
