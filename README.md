@@ -105,7 +105,7 @@ cp .env.example .env
 | Provider | Models | Streaming | Structured Output | Local | Free Tier |
 |----------|--------|-----------|-------------------|--------|-----------|
 | 🌈 **Google Gemini** | 3 | ✅ | ✅ | ❌ | ✅ |
-| 🤖 **OpenAI** | 3 | ✅ | 🔜 Coming Soon | ❌ | ❌ |
+| 🤖 **OpenAI** | 3 | ✅ | ✅ | ❌ | ❌ |
 | 🌊 **Mistral AI** | 4 | ✅ | 🔜 Coming Soon | ❌ | ✅ |
 | 🎭 **Anthropic** | 3 | ✅ | 🔜 Coming Soon | ❌ | ❌ |
 | 🤗 **Hugging Face** | 7 | ✅ | 🔜 Coming Soon | ❌ | ✅ |
@@ -224,7 +224,7 @@ for person in response.content:
     print(f"{person.name} - {person.occupation}")
 ```
 
-**Currently supported:** 🌈 Gemini (other providers coming soon!)
+**Currently supported:** 🌈 Gemini, 🤖 OpenAI (other providers coming soon!)
 
 ## 🎮 Interactive Demo
 
@@ -243,7 +243,7 @@ uv run streamlit run example.py
 ### Celeste-Client Next Steps
 - [x] 📝 **Use Types** - Implement AIPrompt and AIResponse types
 - [x] 📊 **Add Metadata** - Generation time and token usage tracking
-- [x] 🎯 **Structured Output** - Pydantic model support (Gemini ✅)
+- [x] 🎯 **Structured Output** - Pydantic model support (Gemini ✅, OpenAI ✅)
 - [ ] 🔄 **Structured Output for All** - Extend to OpenAI, Anthropic, Mistral
 - [ ] 📚 **Sphinx Documentation** - Comprehensive API documentation
 - [ ] 🧪 **Unit Tests** - Achieve 80% test coverage

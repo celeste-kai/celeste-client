@@ -106,7 +106,7 @@ prompt = st.text_area(
 
 if st.button("✨ Generate", type="primary", use_container_width=True):
     # Create client (accepts both string and enum)
-    client = create_client(selected_provider, model=selected_model)
+    client = create_client(Provider(selected_provider), model=selected_model)
 
     # Use the prompt directly as a string
     ai_prompt = prompt
