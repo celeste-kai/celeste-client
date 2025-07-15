@@ -4,53 +4,53 @@ Celeste AI Client - Minimal predefinition AI communication for Alita agents.
 
 from typing import Any, Union
 
-from .base import BaseClient
-from .core import AIPrompt, AIResponse, LogLevel, MessageRole, Provider
+from .base import BaseAIClient
+from .core import AIPrompt, AIProvider, AIResponse, LogLevel, MessageRole
 
 __version__ = "0.1.0"
 
 
-def create_client(provider: Union[Provider, str], **kwargs: Any) -> BaseClient:
+def create_client(provider: Union[AIProvider, str], **kwargs: Any) -> BaseAIClient:
     if isinstance(provider, str):
-        provider = Provider(provider)
+        provider = AIProvider(provider)
 
-    if provider == Provider.GOOGLE:
+    if provider == AIProvider.GOOGLE:
         from .providers.google import GoogleClient
 
         return GoogleClient(**kwargs)
 
-    if provider == Provider.OPENAI:
+    if provider == AIProvider.OPENAI:
         from .providers.openai import OpenAIClient
 
         return OpenAIClient(**kwargs)
 
-    if provider == Provider.MISTRAL:
+    if provider == AIProvider.MISTRAL:
         from .providers.mistral import MistralClient
 
         return MistralClient(**kwargs)
 
-    if provider == Provider.ANTHROPIC:
+    if provider == AIProvider.ANTHROPIC:
         from .providers.anthropic import AnthropicClient
 
         return AnthropicClient(**kwargs)
 
-    if provider == Provider.HUGGINGFACE:
+    if provider == AIProvider.HUGGINGFACE:
         from .providers.huggingface import HuggingFaceClient
 
         return HuggingFaceClient(**kwargs)
 
-    if provider == Provider.OLLAMA:
+    if provider == AIProvider.OLLAMA:
         from .providers.ollama import OllamaClient
 
         return OllamaClient(**kwargs)
 
-    raise ValueError(f"Provider {provider} not implemented")
+    raise ValueError(f"AIProvider {provider} not implemented")
 
 
 __all__ = [
     "create_client",
-    "BaseClient",
-    "Provider",
+    "BaseAIClient",
+    "AIProvider",
     "MessageRole",
     "LogLevel",
     "AIPrompt",

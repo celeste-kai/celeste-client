@@ -4,13 +4,13 @@ from google import genai
 from google.genai import types
 from pydantic import BaseModel
 
-from celeste_client.base import BaseClient
+from celeste_client.base import BaseAIClient
 from celeste_client.core.config import GOOGLE_API_KEY
-from celeste_client.core.enums import GoogleModel, Provider
+from celeste_client.core.enums import AIProvider, GoogleModel
 from celeste_client.core.types import AIResponse, AIUsage
 
 
-class GoogleClient(BaseClient):
+class GoogleClient(BaseAIClient):
     def __init__(self, model: str = GoogleModel.FLASH_LITE, **kwargs: Any) -> None:
         super().__init__(**kwargs)
 
@@ -58,7 +58,7 @@ class GoogleClient(BaseClient):
         return AIResponse(
             content=content,
             usage=usage,
-            provider=Provider.GOOGLE,
+            provider=AIProvider.GOOGLE,
             metadata={"model": self.model_name},
         )
 
@@ -81,7 +81,7 @@ class GoogleClient(BaseClient):
             if chunk.text:  # Only yield if there's actual content
                 yield AIResponse(
                     content=chunk.text,
-                    provider=Provider.GOOGLE,
+                    provider=AIProvider.GOOGLE,
                     metadata={"model": self.model_name, "is_stream_chunk": True},
                 )
             if hasattr(chunk, "usage_metadata") and chunk.usage_metadata:
@@ -92,6 +92,6 @@ class GoogleClient(BaseClient):
             yield AIResponse(
                 content="",  # Empty content for the usage-only response
                 usage=usage,
-                provider=Provider.GOOGLE,
+                provider=AIProvider.GOOGLE,
                 metadata={"model": self.model_name, "is_final_usage": True},
             )

@@ -5,7 +5,7 @@ Core enumerations for Celeste AI Client.
 from enum import Enum
 
 
-class Provider(Enum):
+class AIProvider(Enum):
     """AI provider enumeration for multi-provider agent support."""
 
     GOOGLE = "google"

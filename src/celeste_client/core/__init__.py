@@ -2,11 +2,11 @@
 Core data definitions for Celeste AI Client.
 """
 
-from .enums import LogLevel, MessageRole, Provider
+from .enums import AIProvider, LogLevel, MessageRole
 from .types import AIPrompt, AIResponse
 
 __all__ = [
-    "Provider",
+    "AIProvider",
     "MessageRole",
     "LogLevel",
     "AIPrompt",

@@ -5,13 +5,13 @@ import streamlit as st
 
 from celeste_client import create_client
 from celeste_client.core.enums import (
+    AIProvider,
     AnthropicModel,
     GoogleModel,
     HuggingFaceModel,
     MistralModel,
     OllamaModel,
     OpenAIModel,
-    Provider,
 )
 from celeste_client.core.types import AIResponse
 
@@ -27,8 +27,8 @@ with st.sidebar:
         return x.title()
 
     selected_provider = st.selectbox(
-        "Provider:",
-        options=[provider.value for provider in Provider],
+        "AIProvider:",
+        options=[provider.value for provider in AIProvider],
         format_func=format_provider,
         index=0,
     )
@@ -63,22 +63,22 @@ with st.sidebar:
     def format_default(x: str) -> str:
         return x
 
-    if selected_provider == Provider.GOOGLE.value:
+    if selected_provider == AIProvider.GOOGLE.value:
         model_options = [model.value for model in GoogleModel]
         format_func = format_gemini
-    elif selected_provider == Provider.OPENAI.value:
+    elif selected_provider == AIProvider.OPENAI.value:
         model_options = [model.value for model in OpenAIModel]
         format_func = format_openai
-    elif selected_provider == Provider.MISTRAL.value:
+    elif selected_provider == AIProvider.MISTRAL.value:
         model_options = [model.value for model in MistralModel]
         format_func = format_mistral
-    elif selected_provider == Provider.ANTHROPIC.value:
+    elif selected_provider == AIProvider.ANTHROPIC.value:
         model_options = [model.value for model in AnthropicModel]
         format_func = format_anthropic
-    elif selected_provider == Provider.HUGGINGFACE.value:
+    elif selected_provider == AIProvider.HUGGINGFACE.value:
         model_options = [model.value for model in HuggingFaceModel]
         format_func = format_huggingface
-    elif selected_provider == Provider.OLLAMA.value:
+    elif selected_provider == AIProvider.OLLAMA.value:
         model_options = [model.value for model in OllamaModel]
         format_func = format_ollama
     else:
@@ -106,7 +106,7 @@ prompt = st.text_area(
 
 if st.button("✨ Generate", type="primary", use_container_width=True):
     # Create client (accepts both string and enum)
-    client = create_client(Provider(selected_provider), model=selected_model)
+    client = create_client(AIProvider(selected_provider), model=selected_model)
 
     # Use the prompt directly as a string
     ai_prompt = prompt

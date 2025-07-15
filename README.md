@@ -33,17 +33,19 @@
 
 ```python
 # Install
-pip install celeste-client  # Coming soon to PyPI
+pip
+install
+celeste - client  # Coming soon to PyPI
 
 # Use any AI provider with the same interface
-from celeste_client import create_client, Provider
+from celeste_client import create_client, AIProvider
 
 # Cloud providers
-client = create_client(Provider.OPENAI, model="gpt-4o-mini")
-client = create_client(Provider.ANTHROPIC, model="claude-3-7-sonnet")
+client = create_client(AIProvider.OPENAI, model="gpt-4o-mini")
+client = create_client(AIProvider.ANTHROPIC, model="claude-3-7-sonnet")
 
 # Local models (no API key needed!)
-client = create_client(Provider.OLLAMA, model="llama3.2")
+client = create_client(AIProvider.OLLAMA, model="llama3.2")
 
 # Generate content
 response = await client.generate_content("Explain quantum computing")
@@ -87,7 +89,7 @@ cp .env.example .env
 <details>
 <summary><b>🔑 API Key Setup</b></summary>
 
-| Provider | Environment Variable | Get API Key |
+| AIProvider | Environment Variable | Get API Key |
 |----------|---------------------|-------------|
 | 🌈 **Gemini** | `GOOGLE_API_KEY` | [Google AI Studio](https://aistudio.google.com/app/apikey) |
 | 🤖 **OpenAI** | `OPENAI_API_KEY` | [OpenAI Platform](https://platform.openai.com/api-keys) |
@@ -102,7 +104,7 @@ cp .env.example .env
 
 <div align="center">
 
-| Provider | Models | Streaming | Structured Output | Local | Free Tier |
+| AIProvider | Models | Streaming | Structured Output | Local | Free Tier |
 |----------|--------|-----------|-------------------|--------|-----------|
 | 🌈 **Google Gemini** | 3 | ✅ | ✅ | ❌ | ✅ |
 | 🤖 **OpenAI** | 3 | ✅ | ✅ | ❌ | ❌ |
@@ -171,18 +173,19 @@ async for chunk in client.stream_generate_content("Write a haiku about programmi
 ### 🏠 Local Models with Ollama
 ```python
 # No API key needed!
-client = create_client(Provider.OLLAMA, model="llama3.2")
+client = create_client(AIProvider.OLLAMA, model="llama3.2")
 
 # Custom host
-client = create_client(Provider.OLLAMA, model="llama3.2", 
+client = create_client(AIProvider.OLLAMA, model="llama3.2", 
                       host="http://192.168.1.100:11434")
 ```
 
-### 🎯 Provider Comparison
-```python
-from celeste_client import create_client, Provider
+### 🎯 AIProvider Comparison
 
-providers = [Provider.OPENAI, Provider.ANTHROPIC, Provider.MISTRAL]
+```python
+from celeste_client import create_client, AIProvider
+
+providers = [AIProvider.OPENAI, AIProvider.ANTHROPIC, AIProvider.MISTRAL]
 prompt = "Explain quantum entanglement in one sentence"
 
 for provider in providers:
@@ -198,7 +201,8 @@ Generate structured data with type safety using Pydantic models:
 
 ```python
 from pydantic import BaseModel
-from celeste_client import create_client, Provider, GeminiModel
+from celeste_client import create_client, AIProvider, GeminiModel
+
 
 # Define your data structure
 class Person(BaseModel):
@@ -206,8 +210,9 @@ class Person(BaseModel):
     age: int
     occupation: str
 
+
 # Single object generation
-client = create_client(Provider.GOOGLE, model=GeminiModel.FLASH)
+client = create_client(AIProvider.GOOGLE, model=GeminiModel.FLASH)
 response = await client.generate_content(
     "Generate a person profile for a software engineer",
     response_schema=Person

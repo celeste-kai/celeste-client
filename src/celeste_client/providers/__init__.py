@@ -1,5 +1,5 @@
 """
-Provider providers for format translation.
+AIProvider providers for format translation.
 """
 
 __all__: list[str] = []

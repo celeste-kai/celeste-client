@@ -2,13 +2,13 @@ from typing import Any, AsyncIterator, Optional
 
 from ollama import AsyncClient
 
-from celeste_client.base import BaseClient
+from celeste_client.base import BaseAIClient
 from celeste_client.core.config import OLLAMA_HOST
-from celeste_client.core.enums import OllamaModel, Provider
+from celeste_client.core.enums import AIProvider, OllamaModel
 from celeste_client.core.types import AIResponse, AIUsage
 
 
-class OllamaClient(BaseClient):
+class OllamaClient(BaseAIClient):
     def __init__(self, model: str = OllamaModel.LLAMA3_2.value, **kwargs: Any) -> None:
         super().__init__(**kwargs)
 
@@ -42,7 +42,7 @@ class OllamaClient(BaseClient):
         return AIResponse(
             content=response["message"]["content"],
             usage=usage,
-            provider=Provider.OLLAMA,
+            provider=AIProvider.OLLAMA,
             metadata={"model": self.model_name},
         )
 
@@ -57,7 +57,7 @@ class OllamaClient(BaseClient):
             if not chunk.get("done"):
                 yield AIResponse(
                     content=chunk["message"]["content"],
-                    provider=Provider.OLLAMA,
+                    provider=AIProvider.OLLAMA,
                     metadata={"model": self.model_name, "is_stream_chunk": True},
                 )
             else:
@@ -66,6 +66,6 @@ class OllamaClient(BaseClient):
                     yield AIResponse(
                         content="",
                         usage=usage,
-                        provider=Provider.OLLAMA,
+                        provider=AIProvider.OLLAMA,
                         metadata={"model": self.model_name, "is_final_usage": True},
                     )

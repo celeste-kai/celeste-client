@@ -6,12 +6,12 @@ from pydantic import BaseModel
 from celeste_client.core.types import AIResponse, AIUsage
 
 
-class BaseClient(ABC):
+class BaseAIClient(ABC):
     @abstractmethod
     def __init__(self, **kwargs: Any) -> None:
         """
         Initializes the client, loading credentials from the environment.
-        Provider-specific arguments can be passed via kwargs.
+        AIProvider-specific arguments can be passed via kwargs.
         """
         pass
 

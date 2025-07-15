@@ -2,13 +2,13 @@ from typing import Any, AsyncIterator, Optional
 
 from mistralai import Mistral
 
-from celeste_client.base import BaseClient
+from celeste_client.base import BaseAIClient
 from celeste_client.core.config import MISTRAL_API_KEY
-from celeste_client.core.enums import MistralModel, Provider
+from celeste_client.core.enums import AIProvider, MistralModel
 from celeste_client.core.types import AIResponse, AIUsage
 
 
-class MistralClient(BaseClient):
+class MistralClient(BaseAIClient):
     def __init__(
         self, model: str = MistralModel.SMALL_LATEST.value, **kwargs: Any
     ) -> None:
@@ -42,7 +42,7 @@ class MistralClient(BaseClient):
         return AIResponse(
             content=response.choices[0].message.content,
             usage=usage,
-            provider=Provider.MISTRAL,
+            provider=AIProvider.MISTRAL,
             metadata={"model": self.model_name},
         )
 
@@ -61,7 +61,7 @@ class MistralClient(BaseClient):
             if chunk.data.choices[0].delta.content:
                 yield AIResponse(
                     content=chunk.data.choices[0].delta.content,
-                    provider=Provider.MISTRAL,
+                    provider=AIProvider.MISTRAL,
                     metadata={"model": self.model_name, "is_stream_chunk": True},
                 )
 
@@ -74,6 +74,6 @@ class MistralClient(BaseClient):
             yield AIResponse(
                 content="",
                 usage=usage_data,
-                provider=Provider.MISTRAL,
+                provider=AIProvider.MISTRAL,
                 metadata={"model": self.model_name, "is_final_usage": True},
             )

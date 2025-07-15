@@ -3,15 +3,15 @@ from typing import Any, AsyncIterator, Optional
 from anthropic import AsyncAnthropic
 from anthropic.types import MessageParam
 
-from celeste_client.base import BaseClient
+from celeste_client.base import BaseAIClient
 from celeste_client.core.config import ANTHROPIC_API_KEY
-from celeste_client.core.enums import AnthropicModel, Provider
+from celeste_client.core.enums import AIProvider, AnthropicModel
 from celeste_client.core.types import AIResponse, AIUsage
 
 MAX_TOKENS = 1024
 
 
-class AnthropicClient(BaseClient):
+class AnthropicClient(BaseAIClient):
     def __init__(
         self,
         model: str = AnthropicModel.CLAUDE_3_7_SONNET.value,
@@ -44,7 +44,7 @@ class AnthropicClient(BaseClient):
         return AIResponse(
             content=response.content[0].text,
             usage=self.format_usage(response.usage),
-            provider=Provider.ANTHROPIC,
+            provider=AIProvider.ANTHROPIC,
             metadata={"model": self.model_name},
         )
 
@@ -61,7 +61,7 @@ class AnthropicClient(BaseClient):
             async for text in stream.text_stream:
                 yield AIResponse(
                     content=text,
-                    provider=Provider.ANTHROPIC,
+                    provider=AIProvider.ANTHROPIC,
                     metadata={"model": self.model_name, "is_stream_chunk": True},
                 )
 
@@ -72,7 +72,7 @@ class AnthropicClient(BaseClient):
                 yield AIResponse(
                     content="",
                     usage=usage,
-                    provider=Provider.ANTHROPIC,
+                    provider=AIProvider.ANTHROPIC,
                     metadata={
                         "model": self.model_name,
                         "is_stream_chunk": True,

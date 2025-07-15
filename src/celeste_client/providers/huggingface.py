@@ -2,13 +2,13 @@ from typing import Any, AsyncIterator, Optional
 
 from huggingface_hub import InferenceClient
 
-from celeste_client.base import BaseClient
+from celeste_client.base import BaseAIClient
 from celeste_client.core.config import HUGGINGFACE_TOKEN
-from celeste_client.core.enums import HuggingFaceModel, Provider
+from celeste_client.core.enums import AIProvider, HuggingFaceModel
 from celeste_client.core.types import AIResponse, AIUsage
 
 
-class HuggingFaceClient(BaseClient):
+class HuggingFaceClient(BaseAIClient):
     def __init__(
         self, model: str = HuggingFaceModel.GEMMA_2_2B.value, **kwargs: Any
     ) -> None:
@@ -39,7 +39,7 @@ class HuggingFaceClient(BaseClient):
         return AIResponse(
             content=response.choices[0].message.content,
             usage=self.format_usage(response.usage),
-            provider=Provider.HUGGINGFACE,
+            provider=AIProvider.HUGGINGFACE,
             metadata={"model": self.model_name},
         )
 
@@ -61,7 +61,7 @@ class HuggingFaceClient(BaseClient):
             if chunk.choices and chunk.choices[0].delta.content:
                 yield AIResponse(
                     content=chunk.choices[0].delta.content,
-                    provider=Provider.HUGGINGFACE,
+                    provider=AIProvider.HUGGINGFACE,
                     metadata={"model": self.model_name, "is_stream_chunk": True},
                 )
 
@@ -74,6 +74,6 @@ class HuggingFaceClient(BaseClient):
             yield AIResponse(
                 content="",
                 usage=usage_data,
-                provider=Provider.HUGGINGFACE,
+                provider=AIProvider.HUGGINGFACE,
                 metadata={"model": self.model_name, "is_final_usage": True},
             )

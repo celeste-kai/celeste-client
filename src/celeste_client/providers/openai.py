@@ -8,13 +8,13 @@ from openai.types.chat import (
 )
 from pydantic import BaseModel, create_model
 
-from celeste_client.base import BaseClient
+from celeste_client.base import BaseAIClient
 from celeste_client.core.config import OPENAI_API_KEY
-from celeste_client.core.enums import OpenAIModel, Provider
+from celeste_client.core.enums import AIProvider, OpenAIModel
 from celeste_client.core.types import AIResponse, AIUsage
 
 
-class OpenAIClient(BaseClient):
+class OpenAIClient(BaseAIClient):
     def __init__(
         self, model: str = OpenAIModel.GPT_O4_MINI.value, **kwargs: Any
     ) -> None:
@@ -82,7 +82,7 @@ class OpenAIClient(BaseClient):
         return AIResponse(
             content=content,
             usage=usage,
-            provider=Provider.OPENAI,
+            provider=AIProvider.OPENAI,
             metadata={"model": self.model_name},
         )
 
@@ -120,7 +120,7 @@ class OpenAIClient(BaseClient):
                         )
                         yield AIResponse(
                             content=content,
-                            provider=Provider.OPENAI,
+                            provider=AIProvider.OPENAI,
                             metadata={
                                 "model": self.model_name,
                                 "is_stream_chunk": True,
@@ -134,7 +134,7 @@ class OpenAIClient(BaseClient):
                     yield AIResponse(
                         content="",
                         usage=usage,
-                        provider=Provider.OPENAI,
+                        provider=AIProvider.OPENAI,
                         metadata={"model": self.model_name, "is_final_usage": True},
                     )
             return
@@ -150,7 +150,7 @@ class OpenAIClient(BaseClient):
             if chunk.choices and chunk.choices[0].delta.content:
                 yield AIResponse(
                     content=chunk.choices[0].delta.content,
-                    provider=Provider.OPENAI,
+                    provider=AIProvider.OPENAI,
                     metadata={"model": self.model_name, "is_stream_chunk": True},
                 )
             elif chunk.usage:
@@ -159,6 +159,6 @@ class OpenAIClient(BaseClient):
                     yield AIResponse(
                         content="",  # Empty content for the usage-only response
                         usage=usage,
-                        provider=Provider.OPENAI,
+                        provider=AIProvider.OPENAI,
                         metadata={"model": self.model_name, "is_final_usage": True},
                     )

@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Optional, Union
 
 from pydantic import BaseModel, ConfigDict
 
-from .enums import MessageRole, Provider
+from .enums import AIProvider, MessageRole
 
 
 class AIPrompt(BaseModel):
@@ -37,5 +37,5 @@ class AIResponse(BaseModel):
 
     content: Union[str, BaseModel, List[BaseModel]]
     usage: Optional[AIUsage] = None
-    provider: Optional[Provider] = None
+    provider: Optional[AIProvider] = None
     metadata: Dict[str, Any] = {}
