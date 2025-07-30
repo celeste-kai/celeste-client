@@ -33,7 +33,7 @@
 
 ```python
 # Install
-pip install celeste-client  # Coming soon to PyPI
+uv add celeste-client  # Coming soon to PyPI
 
 # Use any AI provider with the same interface
 from celeste_client import create_client, Provider
@@ -66,12 +66,12 @@ uv sync
 </details>
 
 <details>
-<summary><b>Using pip</b></summary>
+<summary><b>Using uv pip</b></summary>
 
 ```bash
 git clone https://github.com/yourusername/celeste-client
 cd celeste-client
-pip install -e .
+uv pip install -e .
 ```
 </details>
 
