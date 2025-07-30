@@ -4,7 +4,7 @@ Core data types for agent communication.
 
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 from .enums import MessageRole, Provider
 
@@ -17,7 +17,7 @@ class AIPrompt(BaseModel):
     role: MessageRole
     content: str
     mcp_context: Optional[Dict[str, Any]] = None
-    metadata: Dict[str, Any] = {}
+    metadata: Dict[str, Any] = Field(default_factory=dict)
 
 
 class AIUsage(BaseModel):
@@ -38,4 +38,4 @@ class AIResponse(BaseModel):
     content: Union[str, BaseModel, List[BaseModel]]
     usage: Optional[AIUsage] = None
     provider: Optional[Provider] = None
-    metadata: Dict[str, Any] = {}
+    metadata: Dict[str, Any] = Field(default_factory=dict)
