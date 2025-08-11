@@ -1,47 +1,25 @@
-from typing import Any, AsyncIterator, Optional
+from typing import Any, AsyncIterator
 
+from celeste_core import AIResponse, Provider
+from celeste_core.base.client import BaseClient
+from celeste_core.config.settings import settings
 from ollama import AsyncClient
-
-from celeste_client.base import BaseClient
-from celeste_client.core.config import OLLAMA_HOST
-from celeste_client.core.enums import OllamaModel, Provider
-from celeste_client.core.types import AIResponse, AIUsage
 
 
 class OllamaClient(BaseClient):
-    def __init__(self, model: str = OllamaModel.LLAMA3_2.value, **kwargs: Any) -> None:
-        super().__init__(**kwargs)
-
-        self.client = AsyncClient(host=OLLAMA_HOST)
-        self.model_name = model
-
-    def format_usage(self, usage_data: Any) -> Optional[AIUsage]:
-        """Convert Ollama usage data to AIUsage."""
-
-        prompt_tokens = usage_data.get("prompt_eval_count", 0)
-        completion_tokens = usage_data.get("eval_count", 0)
-        return AIUsage(
-            input_tokens=prompt_tokens,
-            output_tokens=completion_tokens,
-            total_tokens=prompt_tokens + completion_tokens,
-        )
+    def __init__(self, model: str = "llama3.2:latest", **kwargs: Any) -> None:
+        super().__init__(model=model, provider=Provider.OLLAMA, **kwargs)
+        self.client = AsyncClient(host=settings.ollama.host)
 
     async def generate_content(self, prompt: str, **kwargs: Any) -> AIResponse:
         message = {"role": "user", "content": prompt}
-        # Ensure we get usage data by setting stream=False explicitly
-        if "stream" not in kwargs:
-            kwargs["stream"] = False
 
         response = await self.client.chat(
             model=self.model_name, messages=[message], **kwargs
         )
 
-        # Extract usage information if available
-        usage = self.format_usage(response)
-
         return AIResponse(
             content=response["message"]["content"],
-            usage=usage,
             provider=Provider.OLLAMA,
             metadata={"model": self.model_name},
         )
@@ -61,11 +39,4 @@ class OllamaClient(BaseClient):
                     metadata={"model": self.model_name, "is_stream_chunk": True},
                 )
             else:
-                usage = self.format_usage(chunk)
-                if usage:
-                    yield AIResponse(
-                        content="",
-                        usage=usage,
-                        provider=Provider.OLLAMA,
-                        metadata={"model": self.model_name, "is_final_usage": True},
-                    )
+                break

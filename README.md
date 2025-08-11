@@ -49,8 +49,7 @@ client = create_client(Provider.OLLAMA, model="llama3.2")
 response = await client.generate_content("Explain quantum computing")
 print(response.content)
 
-# Get usage details
-print(response.usage)  # Token usage and costs
+# Usage accounting is temporarily removed and will be reintroduced later
 ```
 
 ## 📦 Installation
@@ -189,42 +188,12 @@ for provider in providers:
     client = create_client(provider)
     response = await client.generate_content(prompt)
     print(f"{provider.value}: {response.content}")
-    print(f"Usage: {response.usage}")
+    # Usage accounting is temporarily removed
 ```
 
-### 🎯 Structured Output with Pydantic (NEW!)
+### 🎯 Structured Output
 
-Generate structured data with type safety using Pydantic models:
-
-```python
-from pydantic import BaseModel
-from celeste_client import create_client, Provider, GeminiModel
-
-# Define your data structure
-class Person(BaseModel):
-    name: str
-    age: int
-    occupation: str
-
-# Single object generation
-client = create_client(Provider.GOOGLE, model=GeminiModel.FLASH)
-response = await client.generate_content(
-    "Generate a person profile for a software engineer",
-    response_schema=Person
-)
-print(response.content)  # Person(name='Alice Chen', age=28, occupation='Senior Software Engineer')
-print(response.content.name)  # Direct access to fields: 'Alice Chen'
-
-# List generation
-response = await client.generate_content(
-    "Generate a list of 5 team members",
-    response_schema=list[Person]
-)
-for person in response.content:
-    print(f"{person.name} - {person.occupation}")
-```
-
-**Currently supported:** 🌈 Gemini, 🤖 OpenAI (other providers coming soon!)
+Structured output is provided by the celeste-structured-output package within the Celeste ecosystem. Use it alongside this client to produce and validate typed responses.
 
 ## 🎮 Interactive Demo
 
@@ -241,13 +210,14 @@ uv run streamlit run example.py
 ## 🗺️ Roadmap
 
 ### Celeste-Client Next Steps
-- [x] 📝 **Use Types** - Implement AIPrompt and AIResponse types
-- [x] 📊 **Add Metadata** - Generation time and token usage tracking
+- [x] 📝 **Use Types** - Implement AIResponse type (AIPrompt removed for now)
+- [x] 📊 **Add Metadata** - Generation time (usage tracking deferred)
 - [x] 🎯 **Structured Output** - Pydantic model support (Gemini ✅, OpenAI ✅)
 - [ ] 🔄 **Structured Output for All** - Extend to OpenAI, Anthropic, Mistral
 - [ ] 📚 **Sphinx Documentation** - Comprehensive API documentation
 - [ ] 🧪 **Unit Tests** - Achieve 80% test coverage
 - [ ] 🛡️ **Error Handling** - Robust error handling and retry logic
+- [ ] ⚖️ **Uniform Error Mapping** - Wrap provider SDK errors into shared exception types
 - [ ] 📦 **PyPI Package** - Easy installation
 
 ### Celeste Ecosystem

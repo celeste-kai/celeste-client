@@ -1,58 +1,54 @@
-"""
-Celeste AI Client - Minimal predefinition AI communication for Alita agents.
-"""
-
 from typing import Any, Union
 
-from .base import BaseClient
-from .core import AIPrompt, AIResponse, LogLevel, MessageRole, Provider
+from celeste_core import AIResponse, Provider
+from celeste_core.base.client import BaseClient
+from celeste_core.config.settings import settings
 
 __version__ = "0.1.0"
+
+SUPPORTED_PROVIDERS: set[Provider] = {
+    Provider.GOOGLE,
+    Provider.OPENAI,
+    Provider.MISTRAL,
+    Provider.ANTHROPIC,
+    Provider.HUGGINGFACE,
+    Provider.OLLAMA,
+    Provider.TRANSFORMERS,
+}
 
 
 def create_client(provider: Union[Provider, str], **kwargs: Any) -> BaseClient:
     if isinstance(provider, str):
         provider = Provider(provider)
 
-    if provider == Provider.GOOGLE:
-        from .providers.google import GoogleClient
+    if provider not in SUPPORTED_PROVIDERS:
+        supported = [p.value for p in SUPPORTED_PROVIDERS]
+        raise ValueError(
+            f"Unsupported provider: {provider.value}. Supported: {supported}"
+        )
 
-        return GoogleClient(**kwargs)
+    # Validate environment for the chosen provider
+    settings.validate_for_provider(provider.value)
 
-    if provider == Provider.OPENAI:
-        from .providers.openai import OpenAIClient
+    provider_mapping = {
+        Provider.GOOGLE: (".providers.google", "GoogleClient"),
+        Provider.OPENAI: (".providers.openai", "OpenAIClient"),
+        Provider.MISTRAL: (".providers.mistral", "MistralClient"),
+        Provider.ANTHROPIC: (".providers.anthropic", "AnthropicClient"),
+        Provider.HUGGINGFACE: (".providers.huggingface", "HuggingFaceClient"),
+        Provider.OLLAMA: (".providers.ollama", "OllamaClient"),
+        Provider.TRANSFORMERS: (".providers.transformers", "TransformersClient"),
+    }
 
-        return OpenAIClient(**kwargs)
-
-    if provider == Provider.MISTRAL:
-        from .providers.mistral import MistralClient
-
-        return MistralClient(**kwargs)
-
-    if provider == Provider.ANTHROPIC:
-        from .providers.anthropic import AnthropicClient
-
-        return AnthropicClient(**kwargs)
-
-    if provider == Provider.HUGGINGFACE:
-        from .providers.huggingface import HuggingFaceClient
-
-        return HuggingFaceClient(**kwargs)
-
-    if provider == Provider.OLLAMA:
-        from .providers.ollama import OllamaClient
-
-        return OllamaClient(**kwargs)
-
-    raise ValueError(f"Provider {provider} not implemented")
+    module_path, class_name = provider_mapping[provider]
+    module = __import__(f"celeste_client{module_path}", fromlist=[class_name])
+    client_class = getattr(module, class_name)
+    return client_class(**kwargs)
 
 
 __all__ = [
     "create_client",
     "BaseClient",
     "Provider",
-    "MessageRole",
-    "LogLevel",
-    "AIPrompt",
     "AIResponse",
 ]
