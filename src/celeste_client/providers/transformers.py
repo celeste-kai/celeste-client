@@ -9,27 +9,35 @@ from transformers import AsyncTextIteratorStreamer, AutoModelForCausalLM, AutoTo
 
 
 class TransformersClient(BaseClient):
-    @staticmethod
-    def _resolve_device() -> str:
-        if torch.cuda.is_available():
-            return "cuda"
-        if getattr(torch.backends, "mps", None) and torch.backends.mps.is_available():
-            return "mps"
-        return "cpu"
+    # Keep class minimal; rely on HF/Accelerate device_map for placement
 
     def __init__(self, model: str = "sshleifer/tiny-gpt2", **kwargs: Any) -> None:
         super().__init__(model=model, provider=Provider.TRANSFORMERS, **kwargs)
-        self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
-        self.device = self._resolve_device()
+        self.tokenizer = AutoTokenizer.from_pretrained(
+            self.model_name, local_files_only=True
+        )
+
+        load_kwargs: dict[str, Any] = {
+            "torch_dtype": "auto",
+            "trust_remote_code": True,
+            "local_files_only": True,
+            "low_cpu_mem_usage": True,
+            "device_map": "auto",
+        }
+
         self.model = AutoModelForCausalLM.from_pretrained(
-            self.model_name,
-            torch_dtype="auto",
-            trust_remote_code=True,
-        ).to(self.device)
+            self.model_name, **load_kwargs
+        )
+        # Determine an input device compatible with the loaded model
+        try:
+            self.input_device = next(self.model.parameters()).device
+        except StopIteration:
+            self.input_device = torch.device("cpu")
+        self.model.eval()
 
     async def generate_content(self, prompt: str, **kwargs: Any) -> AIResponse:
         input_kwargs: dict[str, Any] = dict(
-            self.tokenizer(prompt, return_tensors="pt").to(self.device)
+            self.tokenizer(prompt, return_tensors="pt").to(self.input_device)
         )
         max_new_tokens: int = int(kwargs.pop("max_new_tokens", 256))
         gen_kwargs: dict[str, Any] = {"max_new_tokens": max_new_tokens, **kwargs}
@@ -45,7 +53,7 @@ class TransformersClient(BaseClient):
         self, prompt: str, **kwargs: Any
     ) -> AsyncIterator[AIResponse]:
         input_kwargs: dict[str, Any] = dict(
-            self.tokenizer([prompt], return_tensors="pt").to(self.device)
+            self.tokenizer([prompt], return_tensors="pt").to(self.input_device)
         )
         streamer = AsyncTextIteratorStreamer(
             self.tokenizer, skip_prompt=True, skip_special_tokens=True
