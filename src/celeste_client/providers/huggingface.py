@@ -10,7 +10,7 @@ class HuggingFaceClient(BaseClient):
     def __init__(self, model: str = "google/gemma-2-2b-it", **kwargs: Any) -> None:
         super().__init__(model=model, provider=Provider.HUGGINGFACE, **kwargs)
         self.client = AsyncInferenceClient(
-            model=self.model_name,
+            model=self.model,
             token=settings.huggingface.access_token,
         )
 
@@ -18,7 +18,7 @@ class HuggingFaceClient(BaseClient):
         messages = [{"role": "user", "content": prompt}]
 
         response = await self.client.chat.completions.create(
-            model=self.model_name,
+            model=self.model,
             messages=messages,
             **kwargs,
         )
@@ -26,7 +26,7 @@ class HuggingFaceClient(BaseClient):
         return AIResponse(
             content=response.choices[0].message.content,
             provider=Provider.HUGGINGFACE,
-            metadata={"model": self.model_name},
+            metadata={"model": self.model},
         )
 
     async def stream_generate_content(
@@ -35,7 +35,7 @@ class HuggingFaceClient(BaseClient):
         messages = [{"role": "user", "content": prompt}]
 
         stream = await self.client.chat.completions.create(
-            model=self.model_name,
+            model=self.model,
             messages=messages,
             stream=True,
             **kwargs,
@@ -46,5 +46,5 @@ class HuggingFaceClient(BaseClient):
                 yield AIResponse(
                     content=chunk.choices[0].delta.content,
                     provider=Provider.HUGGINGFACE,
-                    metadata={"model": self.model_name, "is_stream_chunk": True},
+                    metadata={"model": self.model, "is_stream_chunk": True},
                 )

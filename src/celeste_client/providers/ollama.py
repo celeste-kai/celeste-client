@@ -15,13 +15,13 @@ class OllamaClient(BaseClient):
         message = {"role": "user", "content": prompt}
 
         response = await self.client.chat(
-            model=self.model_name, messages=[message], **kwargs
+            model=self.model, messages=[message], **kwargs
         )
 
         return AIResponse(
             content=response["message"]["content"],
             provider=Provider.OLLAMA,
-            metadata={"model": self.model_name},
+            metadata={"model": self.model},
         )
 
     async def stream_generate_content(
@@ -29,14 +29,14 @@ class OllamaClient(BaseClient):
     ) -> AsyncIterator[AIResponse]:
         message = {"role": "user", "content": prompt}
         stream = await self.client.chat(
-            model=self.model_name, messages=[message], stream=True, **kwargs
+            model=self.model, messages=[message], stream=True, **kwargs
         )
         async for chunk in stream:
             if not chunk.get("done"):
                 yield AIResponse(
                     content=chunk["message"]["content"],
                     provider=Provider.OLLAMA,
-                    metadata={"model": self.model_name, "is_stream_chunk": True},
+                    metadata={"model": self.model, "is_stream_chunk": True},
                 )
             else:
                 break

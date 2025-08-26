@@ -14,7 +14,7 @@ class TransformersClient(BaseClient):
     def __init__(self, model: str = "sshleifer/tiny-gpt2", **kwargs: Any) -> None:
         super().__init__(model=model, provider=Provider.TRANSFORMERS, **kwargs)
         self.tokenizer = AutoTokenizer.from_pretrained(
-            self.model_name, local_files_only=True
+            self.model, local_files_only=True
         )
 
         load_kwargs: dict[str, Any] = {
@@ -25,15 +25,15 @@ class TransformersClient(BaseClient):
             "device_map": "auto",
         }
 
-        self.model = AutoModelForCausalLM.from_pretrained(
-            self.model_name, **load_kwargs
+        self.pretrained_model = AutoModelForCausalLM.from_pretrained(
+            self.model, **load_kwargs
         )
         # Determine an input device compatible with the loaded model
         try:
-            self.input_device = next(self.model.parameters()).device
+            self.input_device = next(self.pretrained_model.parameters()).device
         except StopIteration:
             self.input_device = torch.device("cpu")
-        self.model.eval()
+        self.pretrained_model.eval()
 
     async def generate_content(self, prompt: str, **kwargs: Any) -> AIResponse:
         input_kwargs: dict[str, Any] = dict(
@@ -41,12 +41,14 @@ class TransformersClient(BaseClient):
         )
         max_new_tokens: int = int(kwargs.pop("max_new_tokens", 256))
         gen_kwargs: dict[str, Any] = {"max_new_tokens": max_new_tokens, **kwargs}
-        out = await asyncio.to_thread(self.model.generate, **input_kwargs, **gen_kwargs)
+        out = await asyncio.to_thread(
+            self.pretrained_model.generate, **input_kwargs, **gen_kwargs
+        )
         text = self.tokenizer.decode(out[0], skip_special_tokens=True)
         return AIResponse(
             content=text,
             provider=Provider.TRANSFORMERS,
-            metadata={"model": self.model_name},
+            metadata={"model": self.model},
         )
 
     async def stream_generate_content(
@@ -65,13 +67,15 @@ class TransformersClient(BaseClient):
             **kwargs,
             **input_kwargs,
         }
-        thread = Thread(target=self.model.generate, kwargs=gen_kwargs, daemon=True)
+        thread = Thread(
+            target=self.pretrained_model.generate, kwargs=gen_kwargs, daemon=True
+        )
         thread.start()
         async for tok in streamer:
             if tok:
                 yield AIResponse(
                     content=tok,
                     provider=Provider.TRANSFORMERS,
-                    metadata={"model": self.model_name, "is_stream_chunk": True},
+                    metadata={"model": self.model, "is_stream_chunk": True},
                 )
         thread.join()
