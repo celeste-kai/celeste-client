@@ -18,7 +18,7 @@ class GoogleClient(BaseClient):
         config = kwargs.pop("config", {})
 
         response = await self.client.aio.models.generate_content(
-            model=self.model_name,
+            model=self.model,
             contents=prompt,
             config=types.GenerateContentConfig(**config),
         )
@@ -28,7 +28,7 @@ class GoogleClient(BaseClient):
         return AIResponse(
             content=content,
             provider=Provider.GOOGLE,
-            metadata={"model": self.model_name},
+            metadata={"model": self.model},
         )
 
     async def stream_generate_content(
@@ -37,7 +37,7 @@ class GoogleClient(BaseClient):
         config = kwargs.pop("config", {})
 
         async for chunk in await self.client.aio.models.generate_content_stream(
-            model=self.model_name,
+            model=self.model,
             contents=prompt,
             config=types.GenerateContentConfig(**config),
         ):
@@ -45,5 +45,5 @@ class GoogleClient(BaseClient):
                 yield AIResponse(
                     content=chunk.text,
                     provider=Provider.GOOGLE,
-                    metadata={"model": self.model_name, "is_stream_chunk": True},
+                    metadata={"model": self.model, "is_stream_chunk": True},
                 )

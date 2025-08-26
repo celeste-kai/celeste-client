@@ -13,7 +13,7 @@ class MistralClient(BaseClient):
 
     async def generate_content(self, prompt: str, **kwargs: Any) -> AIResponse:
         response = await self.client.chat.complete_async(
-            model=self.model_name,
+            model=self.model,
             messages=[{"role": "user", "content": prompt}],
             **kwargs,
         )
@@ -21,14 +21,14 @@ class MistralClient(BaseClient):
         return AIResponse(
             content=response.choices[0].message.content,
             provider=Provider.MISTRAL,
-            metadata={"model": self.model_name},
+            metadata={"model": self.model},
         )
 
     async def stream_generate_content(
         self, prompt: str, **kwargs: Any
     ) -> AsyncIterator[AIResponse]:
         response = await self.client.chat.stream_async(
-            model=self.model_name,
+            model=self.model,
             messages=[{"role": "user", "content": prompt}],
             **kwargs,
         )
@@ -39,5 +39,5 @@ class MistralClient(BaseClient):
                 yield AIResponse(
                     content=chunk.data.choices[0].delta.content,
                     provider=Provider.MISTRAL,
-                    metadata={"model": self.model_name, "is_stream_chunk": True},
+                    metadata={"model": self.model, "is_stream_chunk": True},
                 )

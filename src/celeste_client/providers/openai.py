@@ -22,7 +22,7 @@ class OpenAIClient(BaseClient):
         ]
 
         response = await self.client.chat.completions.create(
-            messages=messages, model=self.model_name, **kwargs
+            messages=messages, model=self.model, **kwargs
         )
 
         content = response.choices[0].message.content or ""
@@ -30,7 +30,7 @@ class OpenAIClient(BaseClient):
         return AIResponse(
             content=content,
             provider=Provider.OPENAI,
-            metadata={"model": self.model_name},
+            metadata={"model": self.model},
         )
 
     async def stream_generate_content(
@@ -42,7 +42,7 @@ class OpenAIClient(BaseClient):
 
         response = await self.client.chat.completions.create(
             messages=messages,
-            model=self.model_name,
+            model=self.model,
             stream=True,
             stream_options=ChatCompletionStreamOptionsParam(include_usage=False),
             **kwargs,
@@ -53,5 +53,5 @@ class OpenAIClient(BaseClient):
                 yield AIResponse(
                     content=chunk.choices[0].delta.content,
                     provider=Provider.OPENAI,
-                    metadata={"model": self.model_name, "is_stream_chunk": True},
+                    metadata={"model": self.model, "is_stream_chunk": True},
                 )

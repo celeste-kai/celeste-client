@@ -21,14 +21,14 @@ class AnthropicClient(BaseClient):
         response = await self.client.messages.create(
             max_tokens=max_tokens,
             messages=[MessageParam(role="user", content=prompt)],
-            model=self.model_name,
+            model=self.model,
             **kwargs,
         )
 
         return AIResponse(
             content=response.content[0].text,
             provider=Provider.ANTHROPIC,
-            metadata={"model": self.model_name},
+            metadata={"model": self.model},
         )
 
     async def stream_generate_content(
@@ -36,7 +36,7 @@ class AnthropicClient(BaseClient):
     ) -> AsyncIterator[AIResponse]:
         max_tokens = kwargs.pop("max_tokens", MAX_TOKENS)
         async with self.client.messages.stream(
-            model=self.model_name,
+            model=self.model,
             max_tokens=max_tokens,
             messages=[MessageParam(role="user", content=prompt)],
             **kwargs,
@@ -45,7 +45,7 @@ class AnthropicClient(BaseClient):
                 yield AIResponse(
                     content=text,
                     provider=Provider.ANTHROPIC,
-                    metadata={"model": self.model_name, "is_stream_chunk": True},
+                    metadata={"model": self.model, "is_stream_chunk": True},
                 )
 
             # finalize stream
