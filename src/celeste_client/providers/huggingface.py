@@ -3,12 +3,18 @@ from typing import Any, AsyncIterator
 from celeste_core import AIResponse, Provider
 from celeste_core.base.client import BaseClient
 from celeste_core.config.settings import settings
-from huggingface_hub import AsyncInferenceClient
 
 
 class HuggingFaceClient(BaseClient):
     def __init__(self, model: str = "google/gemma-2-2b-it", **kwargs: Any) -> None:
         super().__init__(model=model, provider=Provider.HUGGINGFACE, **kwargs)
+        try:
+            from huggingface_hub import AsyncInferenceClient  # type: ignore
+        except ImportError as e:
+            raise ImportError(
+                "Hugging Face provider requires optional dependency 'huggingface-hub'.\n"
+                "Install with: pip install 'celeste-client[huggingface]'"
+            ) from e
         self.client = AsyncInferenceClient(
             model=self.model_name,
             token=settings.huggingface.access_token,
@@ -29,9 +35,7 @@ class HuggingFaceClient(BaseClient):
             metadata={"model": self.model_name},
         )
 
-    async def stream_generate_content(
-        self, prompt: str, **kwargs: Any
-    ) -> AsyncIterator[AIResponse]:
+    async def stream_generate_content(self, prompt: str, **kwargs: Any) -> AsyncIterator[AIResponse]:
         messages = [{"role": "user", "content": prompt}]
 
         stream = await self.client.chat.completions.create(

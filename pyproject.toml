@@ -4,25 +4,50 @@ version = "0.1.0"
 description = "Add your description here"
 requires-python = ">=3.13"
 dependencies = [
-    "celeste-core>=0.1.0",
-    "anthropic>=0.55.0",
-    "google-genai>=0.1.0",
-    "huggingface-hub>=0.28.2",
-    "mistralai>=1.8.2",
-    "ollama>=0.4.6",
-    "openai>=1.91.0",
-    "pydantic>=2.8.2",
-    "transformers>=4.43.4",
-    "torch>=2.3.0",
-    "accelerate>=0.33.0",
+	"celeste-core>=0.1.0",
+	"pydantic>=2.8.2",
+]
+
+[project.optional-dependencies]
+openai = [
+	"openai>=1.91.0",
+]
+anthropic = [
+	"anthropic>=0.55.0",
+]
+google = [
+	"google-genai>=0.1.0",
+]
+huggingface = [
+	"huggingface-hub>=0.28.2",
+]
+mistral = [
+	"mistralai>=1.8.2",
+]
+ollama = [
+	"ollama>=0.4.6",
+]
+transformers = [
+	"transformers>=4.43.4",
+	"torch>=2.3.0",
+	"accelerate>=0.33.0",
+]
+all = [
+	"celeste-client[openai]",
+	"celeste-client[anthropic]",
+	"celeste-client[google]",
+	"celeste-client[huggingface]",
+	"celeste-client[mistral]",
+	"celeste-client[ollama]",
+	"celeste-client[transformers]",
 ]
 
 [dependency-groups]
 dev = [
-    "pre-commit>=4.2.0",
-    "ruff>=0.12.1",
-    "streamlit>=1.46.0",
-    "notebook>=7.4.4",
+	"pre-commit>=4.2.0",
+	"ruff>=0.12.1",
+	"streamlit>=1.46.0",
+	"notebook>=7.4.4",
 ]
 
 
