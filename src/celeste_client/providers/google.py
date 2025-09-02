@@ -1,4 +1,5 @@
-from typing import Any, AsyncIterator
+from collections.abc import AsyncIterator
+from typing import Any
 
 from celeste_core import AIResponse, Provider
 from celeste_core.base.client import BaseClient
@@ -8,9 +9,7 @@ from google.genai import types
 
 
 class GoogleClient(BaseClient):
-    def __init__(
-        self, model: str = "gemini-2.5-flash-lite-preview-06-17", **kwargs: Any
-    ) -> None:
+    def __init__(self, model: str = "gemini-2.5-flash-lite-preview-06-17", **kwargs: Any) -> None:
         super().__init__(model=model, provider=Provider.GOOGLE, **kwargs)
         self.client = genai.Client(api_key=settings.google.api_key)
 
@@ -31,9 +30,7 @@ class GoogleClient(BaseClient):
             metadata={"model": self.model},
         )
 
-    async def stream_generate_content(
-        self, prompt: str, **kwargs: Any
-    ) -> AsyncIterator[AIResponse]:
+    async def stream_generate_content(self, prompt: str, **kwargs: Any) -> AsyncIterator[AIResponse]:
         config = kwargs.pop("config", {})
 
         async for chunk in await self.client.aio.models.generate_content_stream(

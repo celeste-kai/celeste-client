@@ -1,4 +1,5 @@
-from typing import Any, AsyncIterator, List
+from collections.abc import AsyncIterator
+from typing import Any
 
 from celeste_core import AIResponse, Provider
 from celeste_core.base.client import BaseClient
@@ -17,13 +18,9 @@ class OpenAIClient(BaseClient):
         self.client = AsyncOpenAI(api_key=settings.openai.api_key)
 
     async def generate_content(self, prompt: str, **kwargs: Any) -> AIResponse:
-        messages: List[ChatCompletionMessageParam] = [
-            ChatCompletionUserMessageParam(role="user", content=prompt)
-        ]
+        messages: list[ChatCompletionMessageParam] = [ChatCompletionUserMessageParam(role="user", content=prompt)]
 
-        response = await self.client.chat.completions.create(
-            messages=messages, model=self.model, **kwargs
-        )
+        response = await self.client.chat.completions.create(messages=messages, model=self.model, **kwargs)
 
         content = response.choices[0].message.content or ""
 
@@ -33,12 +30,8 @@ class OpenAIClient(BaseClient):
             metadata={"model": self.model},
         )
 
-    async def stream_generate_content(
-        self, prompt: str, **kwargs: Any
-    ) -> AsyncIterator[AIResponse]:
-        messages: List[ChatCompletionMessageParam] = [
-            ChatCompletionUserMessageParam(role="user", content=prompt)
-        ]
+    async def stream_generate_content(self, prompt: str, **kwargs: Any) -> AsyncIterator[AIResponse]:
+        messages: list[ChatCompletionMessageParam] = [ChatCompletionUserMessageParam(role="user", content=prompt)]
 
         response = await self.client.chat.completions.create(
             messages=messages,

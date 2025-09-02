@@ -1,5 +1,5 @@
 from importlib import import_module
-from typing import Any, Union
+from typing import Any
 
 from celeste_core import Provider
 from celeste_core.base.client import BaseClient
@@ -10,7 +10,7 @@ from .mapping import PROVIDER_MAPPING
 __version__ = "0.1.0"
 
 
-def create_client(provider: Union[Provider, str], **kwargs: Any) -> BaseClient:
+def create_client(provider: Provider | str, **kwargs: Any) -> BaseClient:
     prov = Provider(provider) if isinstance(provider, str) else provider
     if prov not in PROVIDER_MAPPING:
         raise ValueError(f"Provider '{prov.value}' is not wired for text generation.")
@@ -21,4 +21,4 @@ def create_client(provider: Union[Provider, str], **kwargs: Any) -> BaseClient:
     return getattr(module, class_name)(**kwargs)
 
 
-__all__ = ["create_client", "BaseClient"]
+__all__ = ["BaseClient", "create_client"]

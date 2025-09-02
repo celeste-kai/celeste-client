@@ -23,8 +23,75 @@ dev = [
     "ruff>=0.12.1",
     "streamlit>=1.46.0",
     "notebook>=7.4.4",
+    "detect-secrets>=1.5.0",
+    "mypy>=1.17.1",
+    "nbstripout>=0.8.1",
 ]
-
 
 [tool.uv.sources]
 celeste-core = { git = "https://github.com/celeste-kai/celeste-core.git" }
+
+[tool.ruff]
+line-length = 120
+target-version = "py313"
+exclude = ["Notebooks/*"]
+
+[tool.ruff.lint]
+select = [
+    "F",      # Pyflakes (includes F401 unused imports, F841 unused variables)
+    "E",      # Pycodestyle errors
+    "W",      # Pycodestyle warnings (includes W505 doc-line-too-long)
+    "C90",    # McCabe complexity
+    "I",      # isort
+    "N",      # pep8-naming
+    "B",      # flake8-bugbear
+    "SIM",    # flake8-simplify (includes SIM105, SIM108)
+    "UP",     # pyupgrade
+    "ANN",    # flake8-annotations (type hints)
+    "ARG",    # flake8-unused-arguments
+    "A",      # flake8-builtins (shadowed names)
+    "SLF",    # flake8-self (protected members)
+    "PLW",    # Pylint warnings
+    "PLC",    # Pylint conventions
+    "PLE",    # Pylint errors
+    "PLR",    # Pylint refactor
+]
+ignore = [
+    "E501",   # Line too long (handled by formatter)
+    "ANN101", # Missing type annotation for self
+    "ANN102", # Missing type annotation for cls
+    "ANN401", # Dynamically typed expressions (Any)
+    "PLR0913", # Too many arguments in function definition
+    "PLR2004", # Magic value used in comparison
+]
+
+# Configure docstring/comment length
+[tool.ruff.lint.pycodestyle]
+max-doc-length = 100
+
+# Configure import sorting
+[tool.ruff.lint.isort]
+known-first-party = ["src", "metadata_extraction", "text_to_speech", "core", "api"]
+
+# Configure code complexity
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+# Configure formatter
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+
+[tool.mypy]
+python_version = "3.13"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_any_unimported = false
+no_implicit_optional = true
+check_untyped_defs = true
+warn_no_return = true
+warn_unused_ignores = true
+show_error_codes = true
+ignore_missing_imports = true
