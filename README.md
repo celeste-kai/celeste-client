@@ -173,7 +173,7 @@ async for chunk in client.stream_generate_content("Write a haiku about programmi
 client = create_client(Provider.OLLAMA, model="llama3.2")
 
 # Custom host
-client = create_client(Provider.OLLAMA, model="llama3.2", 
+client = create_client(Provider.OLLAMA, model="llama3.2",
                       host="http://192.168.1.100:11434")
 ```
 
@@ -249,6 +249,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <div align="center">
   Made with ❤️ by the Celeste Team
-  
+
   <a href="#-celeste-ai-client">⬆ Back to Top</a>
 </div>

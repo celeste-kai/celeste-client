@@ -1,4 +1,5 @@
-from typing import Any, AsyncIterator
+from collections.abc import AsyncIterator
+from typing import Any
 
 from celeste_core import AIResponse, Provider
 from celeste_core.base.client import BaseClient
@@ -24,9 +25,7 @@ class MistralClient(BaseClient):
             metadata={"model": self.model},
         )
 
-    async def stream_generate_content(
-        self, prompt: str, **kwargs: Any
-    ) -> AsyncIterator[AIResponse]:
+    async def stream_generate_content(self, prompt: str, **kwargs: Any) -> AsyncIterator[AIResponse]:
         response = await self.client.chat.stream_async(
             model=self.model,
             messages=[{"role": "user", "content": prompt}],

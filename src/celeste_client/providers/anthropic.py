@@ -1,4 +1,5 @@
-from typing import Any, AsyncIterator
+from collections.abc import AsyncIterator
+from typing import Any
 
 from anthropic import AsyncAnthropic
 from anthropic.types import MessageParam
@@ -10,9 +11,7 @@ MAX_TOKENS = 1024
 
 
 class AnthropicClient(BaseClient):
-    def __init__(
-        self, model: str = "claude-3-7-sonnet-20250219", **kwargs: Any
-    ) -> None:
+    def __init__(self, model: str = "claude-3-7-sonnet-20250219", **kwargs: Any) -> None:
         super().__init__(model=model, provider=Provider.ANTHROPIC, **kwargs)
         self.client = AsyncAnthropic(api_key=settings.anthropic.api_key)
 
@@ -31,9 +30,7 @@ class AnthropicClient(BaseClient):
             metadata={"model": self.model},
         )
 
-    async def stream_generate_content(
-        self, prompt: str, **kwargs: Any
-    ) -> AsyncIterator[AIResponse]:
+    async def stream_generate_content(self, prompt: str, **kwargs: Any) -> AsyncIterator[AIResponse]:
         max_tokens = kwargs.pop("max_tokens", MAX_TOKENS)
         async with self.client.messages.stream(
             model=self.model,

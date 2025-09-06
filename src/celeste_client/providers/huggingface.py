@@ -1,4 +1,5 @@
-from typing import Any, AsyncIterator
+from collections.abc import AsyncIterator
+from typing import Any
 
 from celeste_core import AIResponse, Provider
 from celeste_core.base.client import BaseClient
@@ -29,9 +30,7 @@ class HuggingFaceClient(BaseClient):
             metadata={"model": self.model},
         )
 
-    async def stream_generate_content(
-        self, prompt: str, **kwargs: Any
-    ) -> AsyncIterator[AIResponse]:
+    async def stream_generate_content(self, prompt: str, **kwargs: Any) -> AsyncIterator[AIResponse]:
         messages = [{"role": "user", "content": prompt}]
 
         stream = await self.client.chat.completions.create(

@@ -1,5 +1,3 @@
-"""
-Provider providers for format translation.
-"""
+"""Provider providers for format translation."""
 
 __all__: list[str] = []

@@ -1,4 +1,5 @@
-from typing import Any, AsyncIterator
+from collections.abc import AsyncIterator
+from typing import Any
 
 from celeste_core import AIResponse, Provider
 from celeste_core.base.client import BaseClient
@@ -14,9 +15,7 @@ class OllamaClient(BaseClient):
     async def generate_content(self, prompt: str, **kwargs: Any) -> AIResponse:
         message = {"role": "user", "content": prompt}
 
-        response = await self.client.chat(
-            model=self.model, messages=[message], **kwargs
-        )
+        response = await self.client.chat(model=self.model, messages=[message], **kwargs)
 
         return AIResponse(
             content=response["message"]["content"],
@@ -24,13 +23,9 @@ class OllamaClient(BaseClient):
             metadata={"model": self.model},
         )
 
-    async def stream_generate_content(
-        self, prompt: str, **kwargs: Any
-    ) -> AsyncIterator[AIResponse]:
+    async def stream_generate_content(self, prompt: str, **kwargs: Any) -> AsyncIterator[AIResponse]:
         message = {"role": "user", "content": prompt}
-        stream = await self.client.chat(
-            model=self.model, messages=[message], stream=True, **kwargs
-        )
+        stream = await self.client.chat(model=self.model, messages=[message], stream=True, **kwargs)
         async for chunk in stream:
             if not chunk.get("done"):
                 yield AIResponse(

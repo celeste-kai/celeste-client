@@ -1,9 +1,10 @@
 import asyncio
 
 import streamlit as st
-from celeste_client import create_client
 from celeste_core import Provider, list_models
 from celeste_core.enums.capability import Capability
+
+from celeste_client import create_client
 
 
 async def main() -> None:
@@ -18,16 +19,10 @@ async def main() -> None:
 
     with st.sidebar:
         st.header("⚙️ Configuration")
-        provider = st.selectbox(
-            "Provider:", [p.value for p in providers], format_func=str.title
-        )
-        models = list_models(
-            provider=Provider(provider), capability=Capability.TEXT_GENERATION
-        )
+        provider = st.selectbox("Provider:", [p.value for p in providers], format_func=str.title)
+        models = list_models(provider=Provider(provider), capability=Capability.TEXT_GENERATION)
         model_names = [m.display_name or m.id for m in models]
-        selected_idx = st.selectbox(
-            "Model:", range(len(models)), format_func=lambda i: model_names[i]
-        )
+        selected_idx = st.selectbox("Model:", range(len(models)), format_func=lambda i: model_names[i])
         model = models[selected_idx].id
         streaming = st.toggle("Enable Streaming")
 
