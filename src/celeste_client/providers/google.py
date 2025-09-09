@@ -14,15 +14,15 @@ class GoogleClient(BaseClient):
         self.client = genai.Client(api_key=settings.google.api_key)
 
     async def generate_content(self, prompt: str, **kwargs: Any) -> AIResponse:
-        config = kwargs.pop("config", {})
+        config = kwargs.pop("config", None)
 
         response = await self.client.aio.models.generate_content(
             model=self.model,
             contents=prompt,
-            config=types.GenerateContentConfig(**config),
+            config=types.GenerateContentConfig(**(config or {})),
         )
 
-        content = response.text
+        content = response.parsed if config else response.text
 
         return AIResponse(
             content=content,
