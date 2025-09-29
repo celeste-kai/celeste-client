@@ -7,6 +7,13 @@ from celeste_core.config.settings import settings
 
 from .mapping import PROVIDER_MAPPING
 
+OPTIONAL_PROVIDER_EXTRAS: dict[Provider, tuple[str, tuple[str, ...]]] = {
+    Provider.TRANSFORMERS: (
+        "local",
+        ("accelerate", "torch", "transformers"),
+    ),
+}
+
 __version__ = "0.1.0"
 
 
@@ -17,7 +24,20 @@ def create_client(provider: Provider | str, **kwargs: Any) -> BaseClient:
 
     settings.validate_for_provider(prov.value)
     module_path, class_name = PROVIDER_MAPPING[prov]
-    module = import_module(f"celeste_client{module_path}")
+    try:
+        module = import_module(f"celeste_client{module_path}")
+    except ModuleNotFoundError as exc:
+        extra_info = OPTIONAL_PROVIDER_EXTRAS.get(prov)
+        if extra_info is not None:
+            extra_name, modules = extra_info
+            if exc.name in modules:
+                raise ModuleNotFoundError(
+                    (
+                        f"Provider '{prov.value}' requires the optional dependency "
+                        f"'{exc.name}'. Install it with 'pip install celeste-client[{extra_name}]'."
+                    )
+                ) from exc
+        raise
     return getattr(module, class_name)(**kwargs)
 
 

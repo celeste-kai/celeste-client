@@ -64,6 +64,22 @@ uv sync
 ```
 </details>
 
+### Optional local model support
+
+Install the lightweight client for API providers only:
+
+```bash
+pip install celeste-client
+```
+
+Add local Transformers-based model support when needed:
+
+```bash
+pip install "celeste-client[local]"
+```
+
+The `local` extra pulls in `torch`, `transformers`, and related dependencies only when you explicitly request them, keeping API focused deployments slim.
+
 <details>
 <summary><b>Using uv pip</b></summary>
 
